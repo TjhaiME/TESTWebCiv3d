@@ -161,7 +161,7 @@ export var InstancedBoxes = ({entities,worldInfo,worldTiles,clickFunction}) => {
       //onPointerMove={(e)=>{if (e.instanceId == hoveredInstanceID) }}
       // onClick={(e)=>choosemessage("ChildString", e.instanceId)}
       >
-        <cylinderGeometry args={[0.49, 0.49, 5, 6, 2]} >
+        <cylinderGeometry args={[worldInfo.tileRadius, worldInfo.tileRadius, worldInfo.tileHeight, 6, 2]} >
         <instancedBufferAttribute attach="attributes-color" args={[colorArray, 3]} />
         </cylinderGeometry>
         <meshBasicMaterial toneMapped={false} vertexColors />

@@ -13,6 +13,7 @@ import { Experience } from './components/Experience';
 import { RBody } from './components/RBody';
 import { miniplexTest } from './components/miniplexTest';
 import { KeyboardControls } from '@react-three/drei';
+import { Cylinder } from '@react-three/drei';
 import { jsonWorld } from './components/jsonWorld';
 import { Enemies } from './components/Enemies';
 import { LevelA } from './components/LevelA';
@@ -88,11 +89,11 @@ const gameStateIntToStr = {
 }
 
 function remove_array_element(array,element){
-  console.log("remove_array_element function")
+  //console.log("remove_array_element function")
   var newArray = array.map((x) => x);
   const index = newArray.indexOf(element);
-  console.log("before")
-  console.log(newArray)
+  //console.log("before")
+  //console.log(newArray)
   if (index > -1) { // only splice array when item is found
     newArray.splice(index, 1); // 2nd parameter means remove one item only
   }
@@ -100,8 +101,8 @@ function remove_array_element(array,element){
   // console.log(array)
   // console.log("element = "+element)
   // console.log("finalArray = ")
-  console.log("after")
-  console.log(newArray)
+  //console.log("after")
+  //console.log(newArray)
   return newArray
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +124,8 @@ var tileDefault = {
 var worldInfo = {
   "worldRadius":10,
   "totalGridSize":441,
+  "tileRadius" : 0.5,
+  "tileHeight" : 5,
 }//so we only have to change worldRadius and NOT totalGridSize
 worldInfo.totalGridSize = (2*worldInfo.worldRadius+1)*(2*worldInfo.worldRadius+1)
 
@@ -130,7 +133,7 @@ worldInfo.totalGridSize = (2*worldInfo.worldRadius+1)*(2*worldInfo.worldRadius+1
 function get_inital_world_data(){
   const worldRadius = worldInfo.worldRadius
   const totalGridSize = (2*worldRadius+1)*(2*worldRadius+1)
-  const hexRad = 0.5
+  const hexRad = worldInfo.tileRadius
   const sqrtThree = Math.sqrt(3)
   //use cube coordinates or axial
   //https://www.redblobgames.com/grids/hexagons/
@@ -387,7 +390,6 @@ const next_thing_that_needs_orders = () => {
   //get the next one that hasnt had an issue ordered
   var structureKeys = Object.keys(structures)
   var entityKeys = Object.keys(entities)
-
   const selectedType = typeID_to_word[chosenThing[0]]
   if(selectedType === "structure"){ //should do it the reverse way
     structureKeys = remove_array_element(structureKeys,String(chosenThing[1]))
@@ -396,9 +398,12 @@ const next_thing_that_needs_orders = () => {
     entityKeys = remove_array_element(entityKeys,String(chosenThing[1]))
   }
   for(const structKey of structureKeys){
-    if(structures[structKey].faction != faction){console.log("not right faction");continue}
-    if(structures[structKey].sleeping == true){console.log("is sleeping");continue}
-    if(structures[structKey].doingTask == true){console.log("already busy");continue}
+    if(structures[structKey].faction != faction){//console.log("not right faction");
+      continue}
+    if(structures[structKey].sleeping == true){//console.log("is sleeping");
+      continue}
+    if(structures[structKey].doingTask == true){//console.log("already busy");
+      continue}
     //if we get to this point it means we need to give this structure a task
     selectedStructure = true
     selectedID = parseInt(structKey)
@@ -410,10 +415,14 @@ const next_thing_that_needs_orders = () => {
   console.log(entityKeys)
   for(const entityKey of entityKeys){
     console.log("entityID = "+entityKey)
-    if(entities[entityKey].faction != faction){console.log("not right faction");continue}
-    if(entities[entityKey].sleeping == true){console.log("is sleeping");continue}
-    if(entities[entityKey].haveAttacked == true){console.log("has attacked already");continue} //if above MP then we cant retreat after attacking
-    if(entities[entityKey].MP <= 0){console.log("out of movement points");entities[entityKey].MP = 0;continue}
+    if(entities[entityKey].faction != faction){//console.log("not right faction");
+    continue}
+    if(entities[entityKey].sleeping == true){//console.log("is sleeping");
+    continue}
+    if(entities[entityKey].haveAttacked == true){//console.log("has attacked already");
+    continue} //if above MP then we cant retreat after attacking
+    if(entities[entityKey].MP <= 0){//console.log("out of movement points");
+    entities[entityKey].MP = 0;continue}
     
     //if we get to this point it means we need to give this structure a task
     selectedStructure = false
@@ -454,6 +463,27 @@ function App() {
   //setGameState(0)
   var extraMessage = ""
 
+  //can we put all variables that should force an update
+  // inside a state object?
+  const initialState = {
+    "gameState" : 0,
+    "chosenThing" : [0,-1],
+    "chosenTileID" : 0,
+    "menuContext" : 0
+  }
+  var [stateObj, setMyStateObject] = useState(initialState)
+  function setStateObj(objsToUpdate){
+    var newState = structuredClone(stateObj)
+    for (key of Object.keys(objsToUpdate)){
+      newState[key] = objsToUpdate[key]
+    }
+    setMyStateObject(newState)
+  }//So we want to use setStateObj(objsToUpdate)
+  //where e.g. objsToUpdate = {"gameState":2}
+  //Then change all versions of gameState to be from this
+
+
+
   function get_contextual_UI(){
     //return a JSX element that is the HTML layout for the different buttons needed
     const selectedType = typeID_to_word[chosenThing[0]]
@@ -491,12 +521,14 @@ function App() {
   const setUp_selectMovePos = () => {
     console.log("we have to choose a spot to move to")
     setGameState(1)//orders
+    //setStateObj({"gameState":1})
     return
   }
   
   const setUp_chooseTaskForStructure = () => {
     console.log("choose a task for a structure to do")
     setGameState(2) //structure
+    //setStateObj({"gameState":2})
     return
   }
   
@@ -584,6 +616,7 @@ function App() {
     moveEntityToTile(entityID, finalTile)
     entities[String(entityID)].MP = 0
     setGameState(0)//"default"
+    //setStateObj({"gameState":0})
     //GOOD - give AI a task to walk to that tile (might be multiple steps, show the steps),
     // do a contextual interaction on that tile, e.g. attack or garrison, then
     // tell the system that this AI has done its thing (reduce MP)
@@ -615,6 +648,7 @@ function App() {
 
   function get_contextual_CanvasJSX(){
     const gameStateStr = gameStateIntToStr[gameState]
+    //const gameStateStr = gameStateIntToStr[stateObj.gameState]
     const lightIntensity = 0.5
     var canvasJSX = <></>
     if (gameStateStr === "orders"){
@@ -670,6 +704,7 @@ function App() {
 
   const menuExitButton = () => {
     gameState=0//go to default game mode
+    //stateObj.gameState=0//go to default game mode
   }
   const menuBackButton = () => {
     menuContext=lastMenuContext//go to previous menu
@@ -681,6 +716,7 @@ function App() {
   function get_menu_JSX(){
     var menuOverlayJSX = <></>
     if (gameState === 2){//buildMenu
+    //if (stateObj.gameState === 2){//buildMenu
       console.log("in menu game state")
       menuOverlayJSX = (
       <>
@@ -703,14 +739,40 @@ function App() {
     return menuOverlayJSX
   }
 
+  function get_inCanvasUI(){
+    //If we have a chosen tile -> show it 
+    var inCanvasUI_JSX = <></>
+    const chosenID = chosenThing[1]
+    if(chosenID == -1){
+      return inCanvasUI_JSX
+    }
+    var gridPos = []
+    if (chosenThing[0] == 0){//structure
+      gridPos = structures[chosenID].gridPos
+    }else if (chosenThing[0] == 1){//entity
+      gridPos = entities[chosenID].gridPos
+    }else{
+      return inCanvasUI_JSX
+    }
+    var worldPos = get_tile_pos(gridPos)
+    inCanvasUI_JSX = (
+    <Cylinder position={worldPos} args={[worldInfo.tileRadius, worldInfo.tileRadius, 10*worldInfo.tileHeight*2, 6, 2]}>
+      <meshStandardMaterial color="springgreen" />
+    </Cylinder>
+    )
+    return inCanvasUI_JSX
+  }
 
   const GAME_JSX = get_contextual_CanvasJSX()
   const UI_JSX = get_contextual_UI()
   const menuOverlayJSX = get_menu_JSX()
+  const inCanvasUI_JSX = get_inCanvasUI()
   return (
     <>
     <Canvas shadows camera={{position:[-10,10,0]}} intensity={0.4}>
+      
       {GAME_JSX}
+      {inCanvasUI_JSX}
     </Canvas>
     {UI_JSX}
     {menuOverlayJSX}
@@ -722,7 +784,12 @@ function App() {
 export default App
 
 
-
+function get_tile_pos(gridPos){
+  const actual2Pos = hex.axialToFlatPos(gridPos[0],gridPos[1], worldInfo.tileRadius)
+  const gridID = hex.IDFromGridPos(gridPos, worldInfo.worldRadius)
+  console.log("gridID = "+ gridID)
+  return [actual2Pos[0], worldTiles[String(gridID)].noise, actual2Pos[1]]
+}
 
 
 
@@ -805,12 +872,12 @@ but menu state could be a seperate object*/
 //NEED TO CONVERT DIJKSTRA TO WORKING WITH JAVASCRIPT AND TO WORK IN THE CONTEXT OF THE NEW GAME WORLD AND HEX MAP
 
 function travelDifficulty(currentGridPos, nextGridPos){
-  console.log("travelDifficulty function")
-  console.log(currentGridPos+ " to ")
-  console.log(nextGridPos)
+  //console.log("travelDifficulty function")
+  //console.log(currentGridPos+ " to ")
+  //console.log(nextGridPos)
   const currentGridID = hex.IDFromGridPos(currentGridPos, worldInfo.worldRadius)
   const nextGridID = hex.IDFromGridPos(nextGridPos, worldInfo.worldRadius)
-  console.log(currentGridID+ " to "+ nextGridID)
+  //console.log(currentGridID+ " to "+ nextGridID)
   
   return Math.abs( worldTiles[currentGridID].noise - worldTiles[nextGridID].noise )
 	//return Math.abs( worldTiles[hex.IDFromGridPos(currentGridPos, worldInfo.worldRadius)].noise - worldTiles[hex.IDFromGridPos(nextGridPos, worldInfo.worldRadius)].noise )
@@ -871,6 +938,15 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
   const axialDirectionsArray = [ //for enum
     [0,0],[-1,0],[0,-1],[1,-1],[1,0],[0,1],[-1,1]
   ]
+  const axialDirectionsObj = { //for enum
+  "0,0":0,
+  "-1,0":1,
+  "0,-1":2,
+  "1,-1":3,
+  "1,0":4,
+  "0,1":5,
+  "-1,1":6
+  }
   const adjacentHexCubeMods = [
     [-1,0,1],[0,-1,1],[1,-1,0],[1,0,-1],[0,1,-1],[-1,1,0]
   ]//equaivalent to below
@@ -895,32 +971,32 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     unexploredVertices.push(initialElement)
     
     var endCondition = false
-    console.log("about to start while loop")
+    //console.log("about to start while loop")
     while(!endCondition){//while the unexploredSet is not empty //this only works for fully connected maps
       //console.log("in while loop")
       //// Get the current node
       //do I have to sort the vertices for every loop?
       //unexploredVertices.sort_custom(Callable(MyCustomSorter, "sort_descending")) //seems very inefficient, we choose sort_descending so we can pop_back
-      console.log("before sort")
-      console.log(unexploredVertices)
+      //console.log("before sort")
+      //console.log(unexploredVertices)
       unexploredVertices.sort(myArraySorter)
-      console.log("unexploredVertices")
-      console.log(unexploredVertices)
+      //console.log("unexploredVertices")
+      //print_array(unexploredVertices)
       var current_decision_and_vertex = unexploredVertices[unexploredVertices.length-1]
       unexploredVertices = unexploredVertices.toSpliced(unexploredVertices.length-1,1)
       //unexploredVertices.splice(unexploredVertices.length-1,1)
       //var current_decision_and_vertex = unexploredVertices.pop();//_back()//    let the currentNode equal the node with the smallest distance
-      console.log("after pop")
-      console.log(unexploredVertices)
-      console.log("current_decision_and_vertex = ")
-      console.log(current_decision_and_vertex)
+      //console.log("after pop")
+      //print_array(unexploredVertices)
+      ////console.log("current_decision_and_vertex = ")
+      ////console.log(current_decision_and_vertex)
       var currentVertex = current_decision_and_vertex[1]
-      console.log("currentVertex = "+ currentVertex)
+      //console.log("currentVertex = "+ currentVertex)
       exploredVertices.push(currentVertex)
       data[String(currentVertex[0] + "," + currentVertex[1])]["distanceFromStart"] = current_decision_and_vertex[0]  //record the distance for later
       
       
-      for (const dir of adjacentHexCubeMods){// for each neighbor (still in unexploredSet) to the currentNode
+      for (const dir of adjacentHexAxialMods){// for each neighbor (still in unexploredSet) to the currentNode
         //var neighbour = currentVertex + dir
         var neighbour = addArrays(currentVertex,dir)
         //if not inBounds(neighbour):
@@ -942,21 +1018,33 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
         }
         if (newDistance < oldDistance){
           data[String(neighbour[0] + "," + neighbour[1])]["distanceFromStart"] = newDistance
-          data[String(neighbour[0] + "," + neighbour[1])]["directionToStart"] = axialDirectionsArray.indexOf([-dir[0],-dir[1]])//set neighbor's parent to currentNode
-          console.log("unexploredVertices = ")
-          console.log(unexploredVertices)
-          console.log("element to find = ")
-          console.log([oldDistance, neighbour])
+          //data[String(neighbour[0] + "," + neighbour[1])]["directionToStart"] = axialDirectionsArray.indexOf([-1*dir[0],-1*dir[1]])//set neighbor's parent to currentNode
+          //const dirIndex = axialDirectionsArray.indexOf([-1*dir[0],-1*dir[1]])
+          const dirIndex = axialDirectionsObj[String(-1*dir[0])+","+String(-1*dir[1])]
+          data[String(neighbour[0] + "," + neighbour[1])]["directionToStart"] = dirIndex//set neighbor's parent to currentNode
+          
+          
+          //console.log("unexploredVertices = ")
+          //print_array(unexploredVertices)
+          //console.log("element to find = ")
+          //print_array([[oldDistance, neighbour]])
           //maybe unexploredVertices is only saving one entry not multiple
           const oldArrayElement = [oldDistance, neighbour]
-          var neighbourIndex = unexploredVertices.indexOf(oldArrayElement)
-          
+          //var neighbourIndex = unexploredVertices.indexOf(oldArrayElement)
+          const indexOfArrayElement = (element) => {
+            //if (element[0] === oldDistance){
+            if (element[1][0] == neighbour[0] && element[1][1] == neighbour[1]){
+              return true
+            }
+           // }
+          }//Alternate to indexOf
+          var neighbourIndex = unexploredVertices.findIndex(indexOfArrayElement)
           
           //THIS ONE THROWS AN ERROR
           //console.log(neighbourIndex)
-          console.log("unexploredVertices["+neighbourIndex+"]")
+          //console.log("unexploredVertices["+neighbourIndex+"]")
           //says neighbourIndex is -1, probably from indexOf throwing an error
-          console.log(unexploredVertices[neighbourIndex])
+          //console.log(unexploredVertices[neighbourIndex])
           unexploredVertices[neighbourIndex][0] = newDistance
         }
       }
@@ -965,7 +1053,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
         endCondition = true //reached the end
         //console.log("reached end")
       }
-      if (unexploredVertices.size() <= 0){
+      if (unexploredVertices.length <= 0){
         endCondition = true
         //console.log("ran out of vertices to explore")
       }
@@ -981,13 +1069,21 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     tempPath.push(currentVertex)
     while (endTrace == false){
       //var prevVertex = currentVertex + directionsDic[ data[String(currentVertex[0]+ "," +currentVertex[1])]["directionToStart"] ]//previousNodes[currentNode]
-      var prevVertex = addArrays(currentVertex,directionsDic[ data[String(currentVertex[0]+ "," +currentVertex[1])]["directionToStart"] ])//previousNodes[currentNode]
+      
+      //NEW PROBLEM HERE:
+      //addArrays fails why?
+      //console.log("currentVertex = "+currentVertex)
+      const dirToStartID = data[String(currentVertex[0]+ "," +currentVertex[1])]["directionToStart"]
+      //console.log("dirToStartID = "+dirToStartID)
+      const dirToStart = directionsDic[dirToStartID]
+      //console.log("dirToStart = "+dirToStart)
+      var prevVertex = addArrays(currentVertex,dirToStart)//previousNodes[currentNode]
       //console.log("previousVertex = ", prevVertex)
   //		if prevVertex == null:
   //			endTrace = true
   //			//console.log("tempPathFind has failed")
   //			tempPath = []
-      if (prevVertex == initialVertex){
+      if (prevVertex[0] == initialVertex[0] && prevVertex[1] == initialVertex[1]){
         //console.log("tempPathFind is a success")
         endTrace = true
       }
@@ -1011,4 +1107,22 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     //path = path.reverse() //THIS IS ILLEGAL
     //console.log("stringPath = ", stringPath)
     return vertexPath
+  }
+  
+  function print_array(printArray){
+    console.log("printing an array of length "+printArray.length)
+    for(var i=0;i<printArray.length;i++){
+      if (typeof printArray[i] == "object"){
+        for (var j=0;j<printArray[i].length;j++){
+          
+          if (typeof printArray[i] == "object"){
+            console.log("element ["+i+", "+j+"] = ["+printArray[i][j]+"]")
+          }else{
+            console.log("element ["+i+", "+j+"] = "+printArray[i][j])
+          }
+        }
+      }else{
+      console.log("element ["+i+"] = "+printArray[i])
+      }
+    }
   }
