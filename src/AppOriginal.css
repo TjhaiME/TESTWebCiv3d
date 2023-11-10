@@ -1,52 +1,22 @@
 :root {
-  --canvasHeight: 0.7;
+  --canvasHeight: 0.8;
   --smallCanvasHeight:0.5;
 }
 
 #root{
   width: 100vw;
-  height:100vh;
   /* height: 90vh; */
-  
+  height: calc(var(--canvasHeight) * 100vh);
   background-color: aqua;
-  display:flex;
-  flex-direction: row;
+  z-index: 1;
   
 }
-#canvas{
-  /* height: calc(var(--canvasHeight) * 100vh); */
-  height:70vh;
 
-}
-body {
+#uiTest{
+  width: 100vw;
+  height: calc(calc(1 - var(--canvasHeight)) * 100vh);
+  background-color: rgb(11, 96, 165);
   display:flex;
-  flex-direction: row;
-}
-#main{
-  display:flex;
-  flex-direction: column;
-  width:90vw;
-}
-#sideUI{
-  width:10vw;
-  height:100vh;
-  background-color: rgb(72, 255, 0);
-}
-#topUI{
-  height:5vh;
-  background-color: red;
-}
-#bottomUI{
-  height:25vh;
-  background-color: purple;
-}
-
-
-
-#ui_sideBar{
-  background-color: rgb(40, 96, 165);
-  display:flex;
-  flex-direction: column;
   justify-content: space-around;
     
 }
@@ -68,9 +38,6 @@ body {
   background-color: rgb(71, 70, 126);
 }
 #moveUnit {
-  background-color: rgb(62, 33, 189);
-}
-#attackButton{
   background-color: rgb(189, 33, 33);
 }
 
@@ -117,8 +84,5 @@ body {
   background-color:yellow;
 }
 .buildMenuButton{
-  width:10%;
-  height:10%;
-  border-radius:50%;
-  background-color:rgb(255, 0, 179);
+
 }

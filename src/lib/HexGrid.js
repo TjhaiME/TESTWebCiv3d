@@ -61,9 +61,42 @@ export class HexGrid {
     return newID
   }//TEST
 
+  is_in_bounds(gridPos,worldRadius){
+    if (gridPos[0] <= -worldRadius || gridPos[1] <= -worldRadius){
+      return false
+    }else if (gridPos[0] >= worldRadius || gridPos[1] >= worldRadius){
+      return false
+    }
+    return true
+  }
 
 
-
+  cube_subtract(a, b){
+    return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
+  }
+  cube_distance(a, b){
+    var vec = this.cube_subtract(a, b)
+    return (Math.abs(vec[0]) + Math.abs(vec[1]) + Math.abs(vec[2])) / 2
+    // or: (abs(a.q - b.q) + abs(a.r - b.r) + abs(a.s - b.s)) / 2
+  }
+  distanceAxial(gridPosA,gridPosB){
+    const cube1 = this.axialToCube(gridPosA[0],gridPosA[1])
+    const cube2 = this.axialToCube(gridPosB[0],gridPosB[1])
+    return this.cube_distance(cube1, cube2)
+  }
+  get_circle_of_gridPos(centrePos, range, worldRadius){
+    var results = []
+    for(var dq=-range;dq<=range;dq++){ //each -N ≤ q ≤ +N:
+      for(var dr=Math.max(-range, -dq-range);dr<=Math.min(range,-dq+range);dr++){// each max(-N, -q-N) ≤ r ≤ min(+N, -q+N)
+        const newPos = [centrePos[0] + dq, centrePos[1] + dr]
+      console.log("newPos = "+newPos)
+        if (this.is_in_bounds(newPos,worldRadius)){
+          results.push(newPos)
+        }
+      }
+    }
+    return results
+  }
 
 }
 export default HexGrid;
