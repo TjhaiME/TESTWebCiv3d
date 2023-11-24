@@ -10,7 +10,7 @@ import vertexShader from '../shaders/vertexShader';
 
 
 
-var numOfEnemies = 10;//higher to demonstrate how arrays can be used to make multiple JSX elements
+let numOfEnemies = 10;//higher to demonstrate how arrays can be used to make multiple JSX elements
 
 export const RBody = () => {
     const [hover, setHover] = useState(false);
@@ -92,11 +92,11 @@ export const RBody = () => {
     const arrayOfEnemiesPos = []
     
     console.log("doing update")
-    for (var i=0;i<numOfEnemies;i++){
-        var posX = 0.2*i
-        var posY = 0.3*i
-        var posZ = -0.2*i
-        var myKey = "key"+i
+    for (let i=0;i<numOfEnemies;i++){
+        let posX = 0.2*i
+        let posY = 0.3*i
+        let posZ = -0.2*i
+        let myKey = "key"+i
         arrayOfFloors2.push(<RigidBody type="fixed" name="floor" key={myKey}><Box position={[posX,posY,posZ]} args={[10,1,10]}><meshStandardMaterial color="springgreen" /></Box></RigidBody>)
         arrayOfEnemiesPos.push({x:posX,y:posY,z:posZ})
     }

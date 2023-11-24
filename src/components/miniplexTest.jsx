@@ -21,11 +21,11 @@ const enemy = world.add({
 */
 
 function create_enemy_components(){
-    var amount= 10
-    var enComponents = []
-    for(var i=0;i<amount;i++){
-        var newPos = {x: 2*i, y:1, z:2*i}
-        var enemyComp = {
+    let amount= 10
+    let enComponents = []
+    for(let i=0;i<amount;i++){
+        let newPos = {x: 2*i, y:1, z:2*i}
+        let enemyComp = {
             position: newPos,
             velocity: { x: 0, y: 0, z: 0},
             health: { current: 100, max: 100 },
@@ -39,8 +39,8 @@ function create_enemy_components(){
 }
 
 function add_component_list(compList){
-    for (var i=0;i<compList.length;i++){
-        var enemyComp = compList[i]
+    for (let i=0;i<compList.length;i++){
+        let enemyComp = compList[i]
         ECS.world.add(enemyComp)
     }
 }
@@ -56,12 +56,12 @@ function get_enemy_JSXs(){
     //now we have to somehow use this data to render a scene
     add_component_list(create_enemy_components())
     const posEntities = world.with("position")
-    var newPos = new THREE.Vector3()
-    var enemyJSXList = []
+    let newPos = new THREE.Vector3()
+    let enemyJSXList = []
     for (const thisEntity of posEntities) {
-        var myPos = thisEntity.position
+        let myPos = thisEntity.position
         newPos.set[position.x,position.y,position.z]
-        var myKey = ECS.world.id(entity)
+        let myKey = ECS.world.id(entity)
         enemyJSXList.push(return_enemy_JSX(myPos, myKey))
       }
     return enemyJSXList

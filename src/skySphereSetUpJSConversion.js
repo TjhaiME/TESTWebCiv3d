@@ -9,20 +9,20 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 //import vShader from './defaultShader.glsl'
 
 function v3Add(vec1,vec2){
-    var newVec = new THREE.Vector3(0,0,0)
+    let newVec = new THREE.Vector3(0,0,0)
     newVec.add(vec1)
     newVec.add(vec2)
     return newVec
 }
 function v3PtMult(vec1,vec2){
-    var newVec = new THREE.Vector3(1,1,1)
+    let newVec = new THREE.Vector3(1,1,1)
     newVec.multiply(vec1)
     newVec.multiply(vec2)
     return newVec
 }
 
 function v3Clone(oldVec3){
-	var newVec3 = new THREE.Vector3(0,0,0)
+	let newVec3 = new THREE.Vector3(0,0,0)
 	newVec3.set(oldVec3.x,oldVec3.y,oldVec3.z)
 	return newVec3
 }
@@ -87,7 +87,7 @@ function addVarStar(radius, colourHex, resolution, pos){
 
 function addStar() {
     const [x,y,z] = Array(3).fill().map( () => THREE.MathUtils.randFloatSpread(100) );
-    var pos = [x,y,z];
+    let pos = [x,y,z];
     addVarStar(0.25, 0xffffff, 24, pos);
     /*
     const starGeo = new THREE.SphereGeometry(0.25,24,24);
@@ -130,8 +130,8 @@ function addStar() {
 //
 //                                       Copying over Javascript code Start
 //
-var celestialBodies = {}
-var celestialBodyEntryDefault = {
+let celestialBodies = {}
+let celestialBodyEntryDefault = {
 	pos : [0,0,0],//Vector3(0,0,0),
 	rad : 1.0,
 	col : 0xffffff,//Color(1,1,1,1),
@@ -146,7 +146,7 @@ var celestialBodyEntryDefault = {
 	lightDir : [0,0,0],//Vector3(0,0,0)
 }
 /*
-var celestialBodyEntryDefault = {
+let celestialBodyEntryDefault = {
 	"pos" : [0,0,0],//Vector3(0,0,0),
 	"rad" : 1.0,
 	"col" : 0xffffff,//Color(1,1,1,1),
@@ -160,23 +160,23 @@ var celestialBodyEntryDefault = {
 	"norm" : [0,0,0],//Vector3(0,0,0), //if in orbit, this is the normal of the plane that everything is orbiting on
 	"lightDir" : [0,0,0],//Vector3(0,0,0)
 }*/
-var maxStarRadius = 1000
+let maxStarRadius = 1000
 function generate_random_stars(){
 	//randomize()
-	var amount = 500;
-	for(var i=0;i<amount;i++){
+	let amount = 500;
+	for(let i=0;i<amount;i++){
 		celestialBodies[i] = structuredClone(celestialBodyEntryDefault);
-		var min = 3050;
-		var max = 60000;
-		var d = randf_range(min,max);
+		let min = 3050;
+		let max = 60000;
+		let d = randf_range(min,max);
 		
-		var u = randf_range(0,Math.PI);
-		var v = randf_range(0,2*Math.PI);
-		//var z = randf_range(min,max)
-		var randDir = new THREE.Vector3(Math.sin(u)*Math.cos(v), Math.sin(u)*Math.sin(v), Math.cos(u));// + $CameraWorld.global_transform.origin
+		let u = randf_range(0,Math.PI);
+		let v = randf_range(0,2*Math.PI);
+		//let z = randf_range(min,max)
+		let randDir = new THREE.Vector3(Math.sin(u)*Math.cos(v), Math.sin(u)*Math.sin(v), Math.cos(u));// + $CameraWorld.global_transform.origin
 		
 		celestialBodies[i]["pos"] = randDir.multiplyScalar(d);//d*randDir;
-		var pos = celestialBodies[i]["pos"]
+		let pos = celestialBodies[i]["pos"]
 		//console.log(typeof(pos)+",pos = "+pos.x+","+pos.y+","+pos.z)
 		celestialBodies[i]["rad"] = randf_range(500,maxStarRadius);//randf_range(5000,10000) //changing this isnt reducing the observed radius
 		celestialBodies[i]["col"] = new THREE.Vector4(randf_range(0,1),randf_range(0,1),randf_range(0,1),1.0);
@@ -185,9 +185,9 @@ function generate_random_stars(){
 }
 function randf_range(minVal,maxVal){
     //choose a random float between minVal and maxVal
-    var diff = maxVal - minVal;
-    var randMod = THREE.MathUtils.randFloatSpread(diff);
-    var randVal = minVal + randMod;
+    let diff = maxVal - minVal;
+    let randMod = THREE.MathUtils.randFloatSpread(diff);
+    let randVal = minVal + randMod;
     return randVal;
 }
 
@@ -203,14 +203,14 @@ function randf_range(minVal,maxVal){
 //function to add the star sphere to the scene
 
 function addStarSphere(){
-	var vShader = null
-	var fShader = null
-	var loader = new THREE.FileLoader();
+	let vShader = null
+	let fShader = null
+	let loader = new THREE.FileLoader();
 	// loader.load('defaultShader.vert',function ( data ) {vShader =  data;},);
 	// loader.load('starFrag.frag',function ( data ) {fShader =  data;},);
 
-	var numFilesLeft = 2;
-	var skySphereMesh = new THREE.Mesh()
+	let numFilesLeft = 2;
+	let skySphereMesh = new THREE.Mesh()
   
 	function runNextPartIfDone() {
 	   --numFilesLeft;
@@ -229,32 +229,32 @@ function addStarSphereP2(fShader,vShader){//fShader,vShader
 	//WE NEED TO MODIFY THIS SO IT WAITS UNTIL FILES ARE LOADED
 	//IT seems we have to insert uniforms here
 	const myArrSize = 5000;
-	var myDefines = {
+	let myDefines = {
 		arrSize: myArrSize, 
 	}
-	var vec3Arr = []
-	var vec4Arr = []
-	var intArr = []
-	var floatArr = []
-	var boolArr = []
+	let vec3Arr = []
+	let vec4Arr = []
+	let intArr = []
+	let floatArr = []
+	let boolArr = []
 	//all above have size myArrSize
-	var bigIntArr = []//10000
-	var hugeIntArr = []//50000
+	let bigIntArr = []//10000
+	let hugeIntArr = []//50000
 	//vec3Arr.fill(new THREE.Vector3(0,0,0), 0, myArrSize)//.doesnt go above max size
-	for(var i=0;i<myArrSize;i++){
+	for(let i=0;i<myArrSize;i++){
 		vec3Arr.push(new THREE.Vector3(0,0,0))
 		vec4Arr.push(new THREE.Vector4(0,0,0,0))
 		intArr.push(0)
 		floatArr.push(0.0)
 		boolArr.push(true)
 	}
-	for(var i=0;i<50000;i++){
+	for(let i=0;i<50000;i++){
 		hugeIntArr.push(0)
 	}
-	for(var i=0;i<10000;i++){
+	for(let i=0;i<10000;i++){
 		bigIntArr.push(0)
 	}
-	var myUniforms = {
+	let myUniforms = {
 		"distToSky" : {value :1990.0},
 		"FOVDivider" : {value :5},
 		"halfScreenWidth" : {value :1000},
@@ -274,7 +274,7 @@ function addStarSphereP2(fShader,vShader){//fShader,vShader
 		"startEndPairs" : {value :structuredClone(bigIntArr)},
 	};
 
-	var newMaterial = new THREE.ShaderMaterial({
+	let newMaterial = new THREE.ShaderMaterial({
 		defines: myDefines,
 		uniforms: myUniforms,
 		vertexShader: vShader,
@@ -297,20 +297,20 @@ function addStarSphereP2(fShader,vShader){//fShader,vShader
 }
 
 
-var cameraRef = camera
-var skySphereRef = addStarSphere()
+let cameraRef = camera
+let skySphereRef = addStarSphere()
 generate_random_stars()
 
-var FOVDivider = 8//5
-var halfScreenWidth = 1000//distToSky*sin(0.5*FOV)
-var distToSky = 1990.0
-var maxStarRadius = 1000
-var spawnedStarMeshes = {
+let FOVDivider = 8//5
+let halfScreenWidth = 1000//distToSky*sin(0.5*FOV)
+let distToSky = 1990.0
+let maxStarRadius = 1000
+let spawnedStarMeshes = {
 	//cKey : $ObjectReference
 }
 
 function deg_to_rad(degrees){
-  var pi = Math.PI;
+  let pi = Math.PI;
   return degrees * (pi/180);
 }
 
@@ -322,41 +322,41 @@ function range(start, stop, step){
 }
 function get_obj_list_for_spaceBox(){
 	///vars from converting to javascript
-	var camFOV = cameraRef.fov
-	var cameraTForm = cameraRef.matrixWorld//global_transform
-	var nearDist = cameraRef.near
-	var camPos = new THREE.Vector3(0,0,0)
+	let camFOV = cameraRef.fov
+	let cameraTForm = cameraRef.matrixWorld//global_transform
+	let nearDist = cameraRef.near
+	let camPos = new THREE.Vector3(0,0,0)
 	camPos.setFromMatrixPosition(cameraTForm)
-	var camX = new THREE.Vector3(1,0,0)
-	var camY = new THREE.Vector3(0,1,0)
-	var camZ = new THREE.Vector3(0,0,1)
+	let camX = new THREE.Vector3(1,0,0)
+	let camY = new THREE.Vector3(0,1,0)
+	let camZ = new THREE.Vector3(0,0,1)
 	cameraTForm.extractBasis(camX,camY,camZ)
 	
 
-	var inFOVKeys = []
+	let inFOVKeys = []
 	//how do we get properties of the camera like its forward dir and fov
-	var camDir = v3PtMult(new THREE.Vector3(-1,-1,-1), camZ)
-	var FOV = deg_to_rad(camFOV + 30)//PI/3.0 //60 deg
+	let camDir = v3PtMult(new THREE.Vector3(-1,-1,-1), camZ)
+	let FOV = deg_to_rad(camFOV + 30)//PI/3.0 //60 deg
 	
 	
 	halfScreenWidth = distToSky*Math.sin(deg_to_rad(0.5*camFOV))
 	
-	for(var cKeyIndex = 0;cKeyIndex < Object.keys(celestialBodies).length; cKeyIndex++){
-		var cKey = Object.keys(celestialBodies)[cKeyIndex]
+	for(let cKeyIndex = 0;cKeyIndex < Object.keys(celestialBodies).length; cKeyIndex++){
+		let cKey = Object.keys(celestialBodies)[cKeyIndex]
 		//turn into js loop
-		//var diffVec = celestialBodies[cKey]["pos"] - camPos //camPos is (0,0,0,)
-		var diffVec = v3Clone(celestialBodies[cKey]["pos"])
-		var pos = celestialBodies[cKey]["pos"]
+		//let diffVec = celestialBodies[cKey]["pos"] - camPos //camPos is (0,0,0,)
+		let diffVec = v3Clone(celestialBodies[cKey]["pos"])
+		let pos = celestialBodies[cKey]["pos"]
 		//console.log(typeof(pos)+",cKey = "+cKey+", pos_LATER = "+pos.x+","+pos.y+","+pos.z)
 		//console.log(typeof(diffVec)+", diffVec = "+diffVec.x+","+diffVec.y+","+diffVec.z)
 		diffVec.sub(camPos)
 		//console.log("diffVec = "+diffVec)
-		var diffLength = diffVec.length()
+		let diffLength = diffVec.length()
 		
 		//custom FOV so we detect edges of planets better
-		var customAngle = 0.5*FOV + Math.abs(Math.asin(celestialBodies[cKey]["rad"]/diffLength))
+		let customAngle = 0.5*FOV + Math.abs(Math.asin(celestialBodies[cKey]["rad"]/diffLength))
 		customAngle = clamp(customAngle,0.0,Math.PI-0.05)
-		var cosThreshold = Math.cos(customAngle)
+		let cosThreshold = Math.cos(customAngle)
 		
 		
 		celestialBodies[cKey]["far"] = diffLength
@@ -371,7 +371,7 @@ function get_obj_list_for_spaceBox(){
 			//star is too close and we want to spawn it as a mesh instead
 			if !spawnedStarMeshes.has(cKey):
 				//it is not spawned yet
-				var newStar = MeshInstance3D.new()
+				let newStar = MeshInstance3D.new()
 				newStar.mesh = SphereMesh.new()
 				newStar.mesh.radius = celestialBodies[cKey]["rad"]
 				newStar.mesh.height = 2*celestialBodies[cKey]["rad"]
@@ -386,7 +386,7 @@ function get_obj_list_for_spaceBox(){
 		else: //star is far away
 			if spawnedStarMeshes.has(cKey):
 				//if the star is already spawned and we move too far away we might want to despawn it
-				var oldStar = spawnedStarMeshes[cKey]
+				let oldStar = spawnedStarMeshes[cKey]
 				oldStar.queue_free()
 				spawnedStarMeshes.erase(cKey)
 		////////////////////////////////////
@@ -395,10 +395,10 @@ function get_obj_list_for_spaceBox(){
 		celestialBodies[cKey]["skyRad"] = distToSky*celestialBodies[cKey]["rad"]/diffLength
 		//change these numbers so they are derived from the radius on the nearPlane of the camera
 		
-		var screenCull = 0.0//0.00001//0.0001 seems okay 0.005 should correspond to diameter of 1cm but seems between 1 and 2
-		var planetCullRadius = 0.0//0.00001*(float(distToSky)/nearDist)
-		//var starCullRadius = screenCull*(float(distToSky)/nearDist)//0.1
-		var starCullRadius = screenCull*(distToSky/nearDist)//0.1
+		let screenCull = 0.0//0.00001//0.0001 seems okay 0.005 should correspond to diameter of 1cm but seems between 1 and 2
+		let planetCullRadius = 0.0//0.00001*(float(distToSky)/nearDist)
+		//let starCullRadius = screenCull*(float(distToSky)/nearDist)//0.1
+		let starCullRadius = screenCull*(distToSky/nearDist)//0.1
 		if(celestialBodies[cKey]["type"] == 3){
 			if(celestialBodies[cKey]["skyRad"] <= planetCullRadius){
 				continue
@@ -409,14 +409,14 @@ function get_obj_list_for_spaceBox(){
 				continue
 			}
 		}
-		var normalDiff = diffVec.normalize()//(1.0/diffLength)*diffVec
+		let normalDiff = diffVec.normalize()//(1.0/diffLength)*diffVec
 		celestialBodies[cKey]["objDirs"] = normalDiff
 		//print("radius = ", celestialBodies[cKey]["rad"],",observedRadius = ", celestialBodies[cKey]["skyRad"], " distToSky = ", distToSky, ", diffLength = ", diffLength)
 		
 		//Now that we have the direction from the object to the point we get the dot product between that vector and the object's facing direction.
 		//Facing direction (dot) direction to point
 		
-		var dotProd = camDir.dot(normalDiff)
+		let dotProd = camDir.dot(normalDiff)
 		//print("camDir = ", camDir, ", normalDiff = ", normalDiff, ", dotProd = ", dotProd)
 		
 		//NOTE:
@@ -436,40 +436,40 @@ function get_obj_list_for_spaceBox(){
 	//for first n stars (closest ones)
 	//append its planets after the star in inFOVKeys
 	
-	var inSegmentKeyIndexes = []
-	var totalSegments = (2*FOVDivider + 1)*(2*FOVDivider + 1) //since -ve*FOV_DIVIDE + +ve*FOV_DIVIDE + 0 (e.g. FOVDivider = 3 -> -3,-2,-1,0,1,2,3)
-	for(var i=0; i < totalSegments;i++){
+	let inSegmentKeyIndexes = []
+	let totalSegments = (2*FOVDivider + 1)*(2*FOVDivider + 1) //since -ve*FOV_DIVIDE + +ve*FOV_DIVIDE + 0 (e.g. FOVDivider = 3 -> -3,-2,-1,0,1,2,3)
+	for(let i=0; i < totalSegments;i++){
 		inSegmentKeyIndexes.push([])
 	}
-	//var deltaFromMid is position on sphere - screenMid
+	//let deltaFromMid is position on sphere - screenMid
 	//get my i,j coords by Math.floor(deltaFromMid.x*FOVDivider/halfScreenWidth) (.y for j)
-	//var screenMid = distToSky*camDir + camPos
-	var screenMid = v3Clone(camDir)
+	//let screenMid = distToSky*camDir + camPos
+	let screenMid = v3Clone(camDir)
 	screenMid.multiplyScalar(distToSky)
 	screenMid.add(camPos)
-	for(var keyIndex=0;keyIndex < inFOVKeys.length;keyIndex++){//Object.keys(celestialBodies):
-		var cKey = inFOVKeys[keyIndex]
-		//var objProjPos = celestialBodies[cKey]["pos"] - (celestialBodies[cKey]["far"]-distToSky)*celestialBodies[cKey]["objDirs"]
-		var objProjPos = v3Clone(celestialBodies[cKey]["objDirs"])
+	for(let keyIndex=0;keyIndex < inFOVKeys.length;keyIndex++){//Object.keys(celestialBodies):
+		let cKey = inFOVKeys[keyIndex]
+		//let objProjPos = celestialBodies[cKey]["pos"] - (celestialBodies[cKey]["far"]-distToSky)*celestialBodies[cKey]["objDirs"]
+		let objProjPos = v3Clone(celestialBodies[cKey]["objDirs"])
 		objProjPos.multiplyScalar(-1*(celestialBodies[cKey]["far"]-distToSky))
 		objProjPos.add(celestialBodies[cKey]["pos"])
 
 
 		//can I find a things coordinates on the screen by applying the camera transform
 		//backwards to the shader
-		//var deltaFromMid = objProjPos - screenMid
-		var deltaFromMid = v3Clone(objProjPos)
+		//let deltaFromMid = objProjPos - screenMid
+		let deltaFromMid = v3Clone(objProjPos)
 		deltaFromMid.sub(screenMid)
 		//project to a plane (with normal = camDir = -$CameraWorld/Camera3D.global_transform.basis.z
-		//var planarDelta = deltaFromMid - deltaFromMid.dot(camDir)*camDir
-		var planarDelta = v3Clone(camDir)
+		//let planarDelta = deltaFromMid - deltaFromMid.dot(camDir)*camDir
+		let planarDelta = v3Clone(camDir)
 		planarDelta.multiplyScalar(-1*deltaFromMid.dot(camDir))
 		planarDelta.add(deltaFromMid)
 
-		var screenDelta = new THREE.Vector2(planarDelta.dot(camX),planarDelta.dot(camY))
+		let screenDelta = new THREE.Vector2(planarDelta.dot(camX),planarDelta.dot(camY))
 		//now we have a 2d vector that should be the difference in x,y from the middle of the screen to the point we are interested in
 		//get my i,j coords by Math.floor(deltaFromMid.x*FOVDivider/halfScreenWidth) (.y for j)
-		var indexVec = new THREE.Vector2(Math.floor(screenDelta.x*FOVDivider/halfScreenWidth),Math.floor(screenDelta.y*FOVDivider/halfScreenWidth))
+		let indexVec = new THREE.Vector2(Math.floor(screenDelta.x*FOVDivider/halfScreenWidth),Math.floor(screenDelta.y*FOVDivider/halfScreenWidth))
 		//print("star: ",cKey, "'s indexVec before clamping = ", indexVec)
 		indexVec.x = clamp(indexVec.x,-FOVDivider,FOVDivider) //have to do it component wise as the vector version doesnt work in gdscript, seems to be working in shader language though
 		indexVec.y = clamp(indexVec.y,-FOVDivider,FOVDivider)
@@ -477,28 +477,28 @@ function get_obj_list_for_spaceBox(){
 		//now we have (i,j) which links us to a specific section of the screen
 		
 		//find the middleVec that corresponds to it's spherePos best
-		var myIndex = get_singleIndex_from_indexVec(indexVec) //we do this later anyways
+		let myIndex = get_singleIndex_from_indexVec(indexVec) //we do this later anyways
 		//find its observedRadius and determine how many adjacent arrays it overlaps that we need to put it in to
-		var segmentWidth = 2.0*halfScreenWidth/(2.0*FOVDivider + 1.0)
+		let segmentWidth = 2.0*halfScreenWidth/(2.0*FOVDivider + 1.0)
 		//how many of these are needed to fill observedRadius
 		//e.g: oR = 6.3 sW = 2 we need 4*sW = 8 to fill oR, oR/sW = 3.15, we want ceiling(oR/sW)
-		var adjacentsAffected = Math.ceil(celestialBodies[cKey]["skyRad"]/segmentWidth)
+		let adjacentsAffected = Math.ceil(celestialBodies[cKey]["skyRad"]/segmentWidth)
 		//we need to put this key in the inSegmentKeys Array for the mainIndex and for each adjacent index
-		var iRange = range(-adjacentsAffected, adjacentsAffected+1,1)
-		var jRange = range(-adjacentsAffected, adjacentsAffected+1,1)
-		for(var iIndex = 0 ; iIndex < iRange.length; iIndex++){ //includes 0,0
-			for(var jIndex = 0 ; jIndex < jRange.length; jIndex++){
-				var i = iRange[iIndex]
-				var j = jRange[jIndex]
-				var adjIndexMod = new THREE.Vector2(i,j)
-				//var adjIndexVec = indexVec + adjIndexMod
-				var adjIndexVec = v3Add(indexVec,adjIndexMod)
+		let iRange = range(-adjacentsAffected, adjacentsAffected+1,1)
+		let jRange = range(-adjacentsAffected, adjacentsAffected+1,1)
+		for(let iIndex = 0 ; iIndex < iRange.length; iIndex++){ //includes 0,0
+			for(let jIndex = 0 ; jIndex < jRange.length; jIndex++){
+				let i = iRange[iIndex]
+				let j = jRange[jIndex]
+				let adjIndexMod = new THREE.Vector2(i,j)
+				//let adjIndexVec = indexVec + adjIndexMod
+				let adjIndexVec = v3Add(indexVec,adjIndexMod)
 //				adjIndex.x = clamp(adjIndex.x,-FOVDivider,FOVDivider)
 //				adjIndex.y = clamp(adjIndex.y,-FOVDivider,FOVDivider)
 				if(Math.abs(adjIndexVec.x) > FOVDivider || Math.abs(adjIndexVec.y) > FOVDivider){
 					continue
 				}
-				var adjIndex = get_singleIndex_from_indexVec(adjIndexVec)
+				let adjIndex = get_singleIndex_from_indexVec(adjIndexVec)
 				inSegmentKeyIndexes[adjIndex].push(keyIndex) //add it to the list for this segment of the screen
 				//Which elements of inFOVKeys to use for each segment
 			}
@@ -514,10 +514,10 @@ function get_obj_list_for_spaceBox(){
 	//this is because we dont have variable sized arrays in the shader language so it is difficult to make arrays of arrays
 	//this is the best way I could find that doesnt waste memory transferring thousands of zero data points.
 	
-	var bigList = []
-	var startEndPairs = []
+	let bigList = []
+	let startEndPairs = []
 	//we also need another list of pairs telling us the start and end points
-	for(var i=0;i<inSegmentKeyIndexes.length;i++){
+	for(let i=0;i<inSegmentKeyIndexes.length;i++){
 		//pass
 		//Send the data to the gpu
 		//of which elements of inFOVKeys to use for each segment
@@ -528,7 +528,7 @@ function get_obj_list_for_spaceBox(){
 		}
 		//if it isnt empty then we append the elements to bigList
 		startEndPairs.push(bigList.length)
-		for(var j=0;j<inSegmentKeyIndexes[i].length;j++){
+		for(let j=0;j<inSegmentKeyIndexes[i].length;j++){
 			bigList.push(inSegmentKeyIndexes[i][j])
 		}
 		startEndPairs.push(bigList.length)
@@ -560,48 +560,48 @@ function get_singleIndex_from_indexVec(indexVec){
 function basicProjectionMatrix(fov_deg,far_plane,near_plane){//all floats
 	//https://www.youtube.com/watch?v=ueUMr92GQJc&t=523s
 	//at 8:43-45 ish there is this code for shaders, remaking the projection matrix
-	var S = 1.0/tan(deg_to_rad(0.5*fov_deg))
-	var mfbfmn = (-far_plane)/far_plane-near_plane
-	var mfinbfmn = -(far_plane*near_plane)/(far_plane-near_plane)
-	var mat1 = Vector4(S,0.0,0.0,0.0)
-	var mat2 = Vector4(0.0,S,0.0,0.0)
-	var mat3 = Vector4(0.0,0.0,mfbfmn,-1.0)
-	var mat4 = Vector4(0.0,0.0,mfinbfmn,0.0)
+	let S = 1.0/tan(deg_to_rad(0.5*fov_deg))
+	let mfbfmn = (-far_plane)/far_plane-near_plane
+	let mfinbfmn = -(far_plane*near_plane)/(far_plane-near_plane)
+	let mat1 = Vector4(S,0.0,0.0,0.0)
+	let mat2 = Vector4(0.0,S,0.0,0.0)
+	let mat3 = Vector4(0.0,0.0,mfbfmn,-1.0)
+	let mat4 = Vector4(0.0,0.0,mfinbfmn,0.0)
 	
 	return [mat1,mat2,mat3,mat4]
 }*/
 
 // function getMatrix3BasisFromMatrix4(myMat4){
-// 	var newMat3 = new THREE.Matrix3()
+// 	let newMat3 = new THREE.Matrix3()
 // }
 
 function apply_celestial_data_to_shader(inFOVKeys, bigList, startEndPairs){
-	//var material = skySphereRef.material //it has a problem with this//yourMesh.material.
-	var positionz = []
-	var colours = []
-	var radius = []
-	var solid = []
-	var far = []
-	var skyRads = []
-	var objDirs = []
-	var textureIDs = []//initialise_array()
-	var lightDirs = []
+	//let material = skySphereRef.material //it has a problem with this//yourMesh.material.
+	let positionz = []
+	let colours = []
+	let radius = []
+	let solid = []
+	let far = []
+	let skyRads = []
+	let objDirs = []
+	let textureIDs = []//initialise_array()
+	let lightDirs = []
 	
-	var cameraTForm = cameraRef.matrixWorld
-	var camBasis = new THREE.Matrix3(1,0,0,0,1,0,0,0,1)
+	let cameraTForm = cameraRef.matrixWorld
+	let camBasis = new THREE.Matrix3(1,0,0,0,1,0,0,0,1)
 	camBasis = camBasis.setFromMatrix4(cameraTForm)
-	var camPos = new THREE.Vector3(0,0,0)
+	let camPos = new THREE.Vector3(0,0,0)
 	camPos.setFromMatrixPosition(cameraTForm)
-	var camX = new THREE.Vector3(1,0,0)
-	var camY = new THREE.Vector3(0,1,0)
-	var camZ = new THREE.Vector3(0,0,1)
+	let camX = new THREE.Vector3(1,0,0)
+	let camY = new THREE.Vector3(0,1,0)
+	let camZ = new THREE.Vector3(0,0,1)
 	cameraTForm.extractBasis(camX,camY,camZ)
-	//var camDir = -camZ
-	var camDir = v3PtMult(new THREE.Vector3(-1,-1,-1), camZ)
+	//let camDir = -camZ
+	let camDir = v3PtMult(new THREE.Vector3(-1,-1,-1), camZ)
 	
 	
-	for( var k=0; k<inFOVKeys; k++){
-		var key = inFOVKeys[k]
+	for( let k=0; k<inFOVKeys; k++){
+		let key = inFOVKeys[k]
 		positionz.push(celestialBodies[key]["pos"])
 		colours.push(celestialBodies[key]["col"])
 		radius.push(celestialBodies[key]["rad"])
@@ -664,9 +664,9 @@ function apply_celestial_data_to_shader(inFOVKeys, bigList, startEndPairs){
 
 //We need to change these so they sort javascript arrays
 function sort_inFOVKeys(inFOVKeys){
-	//var newFuncDic = inFOVKeys//.duplicate(true)
+	//let newFuncDic = inFOVKeys//.duplicate(true)
 	//newFuncDic.sort_custom(Callable(self,"sort_celestialBodies_keys"))
-	var newFuncDic = inFOVKeys.toSorted(sort_celestialBodies_keys)
+	let newFuncDic = inFOVKeys.toSorted(sort_celestialBodies_keys)
 	return newFuncDic
 }
 function sort_celestialBodies_keys(key1,key2){
@@ -676,9 +676,9 @@ function sort_celestialBodies_keys(key1,key2){
 	// }
 	// //shouldnt this be the distance to camPos?
 	// return false
-	var camPos = new THREE.Vector3(0,0,0)
-	var distance1 = (celestialBodies[key1]["pos"].sub(camPos)).lengthSq()
-	var distance2 = (celestialBodies[key2]["pos"].sub(camPos)).lengthSq()
+	let camPos = new THREE.Vector3(0,0,0)
+	let distance1 = (celestialBodies[key1]["pos"].sub(camPos)).lengthSq()
+	let distance2 = (celestialBodies[key2]["pos"].sub(camPos)).lengthSq()
 	return distance2-distance1
 }
 
@@ -710,7 +710,7 @@ function animate(){
 	
 	renderer.render(scene,camera);
 }
-for(var i=0;i<100;i++){
+for(let i=0;i<100;i++){
     addStar()
 }
 animate(); //once this is called nothing below gets called?

@@ -52,13 +52,13 @@ const unitGeoScale = 0.25
 
 
 
-var hoverPath = []
-var totalGridSize = 1000 //set in code below
-var needsUpdate = false
-var hoveredInstanceID = -1
+let hoverPath = []
+let totalGridSize = 1000 //set in code below
+let needsUpdate = false
+let hoveredInstanceID = -1
 // get_inital_world_data()
 // console.log(worldTiles)
-export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunction, hoverFunction}) => {
+export let InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunction, hoverFunction}) => {
 //function InstancedBoxes({worldInfo,worldTiles,choosemessage}){
 
   const worldRadius = worldInfo.worldRadius
@@ -66,21 +66,21 @@ export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunc
 
 
   const [hovered, setHovered] = useState()
-  //var colorArray = useMemo(() => Float32Array.from(new Array(1000).fill().flatMap((_, i) => tempColor.set(data[i].color).toArray())), [])
-  var colorArray = useMemo(() => Float32Array.from(new Array(Object.keys(worldTiles).length).fill().flatMap((_, i) => tempColor.setHex(worldTiles[String(i)].colorHexStr).toArray())), [])
+  //let colorArray = useMemo(() => Float32Array.from(new Array(1000).fill().flatMap((_, i) => tempColor.set(data[i].color).toArray())), [])
+  let colorArray = useMemo(() => Float32Array.from(new Array(Object.keys(worldTiles).length).fill().flatMap((_, i) => tempColor.setHex(worldTiles[String(i)].colorHexStr).toArray())), [])
   
   //const ref = useRef()
   const tempObject = new THREE.Object3D()
   
   const worldMeshRef = useRef()
   const prevRef = useRef()
-  var entityMeshRef = useRef()
-  var structureMeshRef = useRef()
+  let entityMeshRef = useRef()
+  let structureMeshRef = useRef()
 
 
-  var mageHatMeshRef = useRef()
-  var meleeHatMeshRef = useRef()
-  var riceHatMeshRef = useRef()
+  let mageHatMeshRef = useRef()
+  let meleeHatMeshRef = useRef()
+  let riceHatMeshRef = useRef()
 
   useLayoutEffect(() => void (prevRef.current = hovered), [hovered])
   //const gridWidth = 100
@@ -104,7 +104,7 @@ export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunc
     //const keysOfWorld = Object.keys(worldTiles)
     for (let indx = 0; indx < Object.keys(worldTiles).length; indx++){
       //console.log("loop for index ", indx)
-      //var offset = false
+      //let offset = false
       //if(x%2==1){offset = true}
       const tileKey = Object.keys(worldTiles)[indx]
       const yPos = worldTiles[tileKey]["noise"]
@@ -137,7 +137,7 @@ export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunc
         }
         //console.log("hoverPath = ", hoverPath)
         if (Array.isArray(hoverPath)){
-          for(var k = 0; k < hoverPath.length;k++){
+          for(let k = 0; k < hoverPath.length;k++){
             const myID = hex.IDFromGridPos(hoverPath[k], worldInfo.worldRadius)
             tempColor.setRGB(10, 1, 10).toArray(colorArray, myID * 3)
           }
@@ -166,7 +166,7 @@ export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunc
     const amountOfEntities = Object.keys(entities).length
     if (entityMeshRef != undefined){
       for (const key of Object.keys(entities)){
-        var instID = entities[key].instID
+        let instID = entities[key].instID
         // if(instID == -1){
         //   //then an instance ID has not been assigned for this model
           
@@ -202,7 +202,7 @@ export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunc
   const amountOfStructures = Object.keys(structures).length
   if (true){//(structureMeshRef != undefined){
     for (const key of Object.keys(structures)){
-      var instID = structures[key].instID
+      let instID = structures[key].instID
       // if(instID == -1){
       //   //then an instance ID has not been assigned for this model
         
@@ -249,19 +249,19 @@ export var InstancedBoxes = ({entities,structures,worldInfo,worldTiles,clickFunc
   /////////////////////////////////////////////////////////////////////
   ///////    Start of decorations
   ///////////////////////////////////////////////////////////////////////////
-  var hat_GLTFStrings = {
+  let hat_GLTFStrings = {
     "mage" : "/src/assets/entities/mageHat.glb",
     "melee" : "/src/assets/entities/meleeHat.glb",
     "rice" : "/src/assets/entities/riceHat.glb"
   }
-  var hatRefs = {
+  let hatRefs = {
     "melee" : undefined,
     "mage" : undefined,
     "rice" : undefined
   }
-  var decorationJSXArray = [<></>,<></>,<></>]
+  let decorationJSXArray = [<></>,<></>,<></>]
 
-  for (var modelID of [0,1,2]){
+  for (let modelID of [0,1,2]){
     const decorType = worldInfo.modelIDToHat[modelID]
     // console.log("decorType = "+decorType)
     // console.log("pathToDecoration = ")
@@ -445,13 +445,13 @@ function EntitiesJSX_withRef(entities) {
 
   //function get_base_factionArray(){
   const amount = Object.keys(entities)
-  var facArr = []
-  for (var key of Object.keys(entities)){
+  let facArr = []
+  for (let key of Object.keys(entities)){
     //get data for uniform for shader
     facArr.push(entities[key].faction)
     //return facArr
-    // var flt32Array = Float32Array.from(facArr)
-    // var int8Arr = Uint8Array.from(facArr)
+    // let flt32Array = Float32Array.from(facArr)
+    // let int8Arr = Uint8Array.from(facArr)
     // //(() => Float32Array.from(new Array(Object.keys(worldTiles).length).fill().flatMap((_, i) => tempColor.setHex(worldTiles[String(i)].colorHexStr).toArray())), [])
     // return flt32Array
     //return int8Arr
@@ -462,19 +462,19 @@ function EntitiesJSX_withRef(entities) {
   //unitGeo.computeVertexNormals();
   //unitGeo.scale(worldInfo.tileRadius, worldInfo.tileRadius, worldInfo.tileRadius);
 
-  var instancedGeometry = new THREE.InstancedBufferGeometry()
+  let instancedGeometry = new THREE.InstancedBufferGeometry()
   Object.keys(geo.attributes).forEach(attributeName=>{
     instancedGeometry.attributes[attributeName] = geo.attributes[attributeName]
   })
   instancedGeometry.index = geo.index
   const baseMaxSize = Object.keys(entities).length//1000
   if(factionArray.length < baseMaxSize){
-    for(var i=factionArray.length;i<baseMaxSize;i++){
+    for(let i=factionArray.length;i<baseMaxSize;i++){
       factionArray.push(-1)
     }
   }
-  var flt32Array = Float32Array.from(factionArray)
-  var int8Arr = Uint8Array.from(factionArray)
+  let flt32Array = Float32Array.from(factionArray)
+  let int8Arr = Uint8Array.from(factionArray)
   instancedGeometry.maxInstancedCount = baseMaxSize
   //const myFactionArray = new Uint8Array(baseMaxSize*1)
 
@@ -540,8 +540,8 @@ function EntitiesJSX_withRef(entities) {
 
 function get_decoration_instanceJSX(modelID, GLTFString, entities){
     //Draw all decorations
-    var keysOfThisType = []
-    for (var key of Object.keys(entities)){
+    let keysOfThisType = []
+    for (let key of Object.keys(entities)){
       //get data for clothing decorations
       if (entities[key].modelID == modelID){
         keysOfThisType.push(key)

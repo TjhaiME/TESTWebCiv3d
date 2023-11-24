@@ -32,13 +32,13 @@ export class HexGrid {
     
     
   cube_round(fracQ,fracR,fracS){
-    var q = round(fracQ)
-    var r = round(fracR)
-    var s = round(fracS)
+    let q = round(fracQ)
+    let r = round(fracR)
+    let s = round(fracS)
 
-    var q_diff = abs(q - fracQ)
-    var r_diff = abs(r - fracR)
-    var s_diff = abs(s - fracS)
+    let q_diff = abs(q - fracQ)
+    let r_diff = abs(r - fracR)
+    let s_diff = abs(s - fracS)
 
     if (q_diff > r_diff && q_diff > s_diff){
     q = -r-s
@@ -75,7 +75,7 @@ export class HexGrid {
     return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
   }
   cube_distance(a, b){
-    var vec = this.cube_subtract(a, b)
+    let vec = this.cube_subtract(a, b)
     return (Math.abs(vec[0]) + Math.abs(vec[1]) + Math.abs(vec[2])) / 2
     // or: (abs(a.q - b.q) + abs(a.r - b.r) + abs(a.s - b.s)) / 2
   }
@@ -85,9 +85,9 @@ export class HexGrid {
     return this.cube_distance(cube1, cube2)
   }
   get_circle_of_gridPos(centrePos, range, worldRadius){
-    var results = []
-    for(var dq=-range;dq<=range;dq++){ //each -N ≤ q ≤ +N:
-      for(var dr=Math.max(-range, -dq-range);dr<=Math.min(range,-dq+range);dr++){// each max(-N, -q-N) ≤ r ≤ min(+N, -q+N)
+    let results = []
+    for(let dq=-range;dq<=range;dq++){ //each -N ≤ q ≤ +N:
+      for(let dr=Math.max(-range, -dq-range);dr<=Math.min(range,-dq+range);dr++){// each max(-N, -q-N) ≤ r ≤ min(+N, -q+N)
         const newPos = [centrePos[0] + dq, centrePos[1] + dr]
       console.log("newPos = "+newPos)
         if (this.is_in_bounds(newPos,worldRadius)){
@@ -140,13 +140,13 @@ function getLastCubeCoord(q,r){
 
 
 function cube_round(fracQ,fracR,fracS){
-  var q = round(fracQ)
-  var r = round(fracR)
-  var s = round(fracS)
+  let q = round(fracQ)
+  let r = round(fracR)
+  let s = round(fracS)
 
-  var q_diff = abs(q - fracQ)
-  var r_diff = abs(r - fracR)
-  var s_diff = abs(s - fracS)
+  let q_diff = abs(q - fracQ)
+  let r_diff = abs(r - fracR)
+  let s_diff = abs(s - fracS)
 
   if (q_diff > r_diff && q_diff > s_diff){
     q = -r-s

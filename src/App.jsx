@@ -83,16 +83,16 @@ const hex = new HexGrid();
 // import fragmentShader from './shaders/tut3FragShad.js';//3=blob
 // import vertexShader from './shaders/tut3VertShad.js';
 
-var playerFaction = 0
-//var chosenTileID = 0
-//var chosenThing = [0,-1]
-var menuContext = 0;
-var lastMenuContext = 0;
-var lastHoveredID = Infinity;
-var storedChosenID = -1; //so when we need to click a seperate entity we can remember who we are clicking it for
-var storedTaskID = -1;
-//var gameState = 0
-//var  [gameState, setGameState] = useState("ParentString")
+let playerFaction = 0
+//let chosenTileID = 0
+//let chosenThing = [0,-1]
+let menuContext = 0;
+let lastMenuContext = 0;
+let lastHoveredID = Infinity;
+let storedChosenID = -1; //so when we need to click a seperate entity we can remember who we are clicking it for
+let storedTaskID = -1;
+//let gameState = 0
+//let  [gameState, setGameState] = useState("ParentString")
 // function setGameState(newGameState){
 //   gameState = newGameState
 
@@ -105,14 +105,14 @@ const gameStateIntToStr = {
 
 function remove_array_element(array,element){
   //console.log("remove_array_element function")
-  var newArray = array.map((x) => x);
+  let newArray = array.map((x) => x);
   const index = newArray.indexOf(element);
   //console.log("before")
   //console.log(newArray)
   if (index > -1) { // only splice array when item is found
     newArray.splice(index, 1); // 2nd parameter means remove one item only
   }
-  //var newArray = structuredClone(array)
+  //let newArray = structuredClone(array)
   // console.log(array)
   // console.log("element = "+element)
   // console.log("finalArray = ")
@@ -125,8 +125,8 @@ function remove_array_element(array,element){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-var worldTiles = {}
-var tileDefault = {
+let worldTiles = {}
+let tileDefault = {
   "q" : 0,//cube coords
   "r" : 0,
   "noise" : 0,
@@ -149,7 +149,7 @@ var tileDefault = {
 
 
 
-var worldInfo = {
+let worldInfo = {
   "worldRadius":10,//tiles to left and right up and down
   "totalGridSize":441,//saved in code based on worldRadius
   "tileRadius" : 0.5,//physical radius of hex tile
@@ -162,6 +162,11 @@ var worldInfo = {
   "digDiversitySub" : 0.15,//amount of biodiversity lost by digging the land
   "workDiversitySub" : 0.05,//amount of biodiversity lost by working the land
   "maxDistrictDist" : 3,//max distance from city centre that you can build districts
+  "foodConsumeRate" : 0.2,//food that each population eats per turn
+  "noFoodMortalityPenalty" : 0.1,
+  "noFoodHappinessPenalty" : 0.1,
+  "foodHappinessMax" : 0.5,
+  "baseGrowthRate" : 0.8,//if fed we contribute this much to increasing population each turn (multiplied by happiness)
   "modelIDToHat" : { //needs to be in worldInfo so we an access it in instances.js
     "-1": "null",
     "0" : "mage",
@@ -199,9 +204,9 @@ function get_inital_world_data(){
   //3 axes q,r,s; q+r+s=0
   //loop(for all q)loop(for all r){s=-r-q}{}
   
-  var i=0
-  for(var q=-worldRadius;q<worldRadius+1;q++){
-    for(var r=-worldRadius;r<worldRadius+1;r++){
+  let i=0
+  for(let q=-worldRadius;q<worldRadius+1;q++){
+    for(let r=-worldRadius;r<worldRadius+1;r++){
       const s = hex.getLastCubeCoord(q,r)
       const tileKey = String(i)
       //const intID = parseInt(tileKey)
@@ -225,7 +230,7 @@ function get_inital_world_data(){
 
       //worldTiles[tileKey]["colorHexStr"] = Math.random() * 0xffffff
       const noise = worldTiles[tileKey]["noise"]
-      var newColour = 0xffffff
+      let newColour = 0xffffff
       if(noise < -0.8){
         newColour = 0x000000
       }else if(noise <-0.6){
@@ -254,9 +259,9 @@ function get_inital_world_data(){
 
 function get_inital_random_entity_data(){
   const worldRadius = worldInfo.worldRadius
-  var i=0
-  for(var q=-worldRadius;q<worldRadius+1;q++){
-    for(var r=-worldRadius;r<worldRadius+1;r++){
+  let i=0
+  for(let q=-worldRadius;q<worldRadius+1;q++){
+    for(let r=-worldRadius;r<worldRadius+1;r++){
       if(Math.random()*10 < 2){
         //spawn entity on that tile
         spawnEntity(0, i%2, [q,r])
@@ -293,7 +298,7 @@ const subStateEnum = {
 
 
 
-var trees = {}
+let trees = {}
 //populate an array full of trees for different tiles
 const treeDefault = {
   "type" : 0,
@@ -304,7 +309,7 @@ const treeDefault = {
 
 
 
-var entities = {}//all the units/entities in the world
+let entities = {}//all the units/entities in the world
 const entityDefault = {
   "instID" : -1,
   "name" : "entityInstX",
@@ -328,7 +333,7 @@ const entityDefault = {
   "tasks":[]//we need to record what the player wants us to do.
 }
 
-var unitTypes = {
+let unitTypes = {
   "0":{//we need a default to test code
     "MPPerTurn":10,
     "maxMP":200,//maximum amount of movement points
@@ -410,7 +415,7 @@ const suppliesDefault = {
   "crystal" : 0//mixed throughout
 }
 
-var structures = {}
+let structures = {}
 const structureDefault = { //default for instance based information on structures
   //some of these should be in a townData
   "name" : "null_struct_name",
@@ -445,7 +450,7 @@ const structureDefault = { //default for instance based information on structure
 
 
 // structureTypes[structTypeID]["maxHP"]
-var structureTypes = {
+let structureTypes = {
   "0":{
     "maxHP":100,
     "def":5,
@@ -495,18 +500,21 @@ const structureTypeDefault={
 
 }
 
-var towns = {}
+let towns = {}
 const townDefault = {
   "population" : 1,
+  "nextPopCount" : 1, //decrease over time until we hit 0
   "happiness" : 1,
   "mortality" : 0.1,
+  "deathCount" : 0,//when it gets to one we lose a population
+  "production" : 1,
   "districtIDs" : [],//the first is always cityCentre
   "inventory" : {//if put here, can be transferred instantly from district
     //extraActionID:ammo
   },//for restocking
   "supplies" : {},//get from suppliesDefault
-  "storedFood" : 1,
-  "foodWasteRate" : 0.5,
+  //"storedFood" : 1,
+  "foodWasteRate" : 0.1,
   "name" : "insert town name",
   "faction" : -1,
 }
@@ -522,7 +530,7 @@ function setUpTownFromCityCentre(structKey){
   return newTownKey
 }
 
-var factionData = {}
+let factionData = {}
 const factionDataDefault = {
   "friends" : [],
   "allies" : [],
@@ -651,10 +659,10 @@ const extraActionDefault = {
 //   const extraActionKey = String(extraActionID)
 //   console.log("extraActionKey = "+extraActionKey)
 //   console.log(extraActionsData[extraActionKey])
-//   var extraActionString = extraActionsData[extraActionKey]["funcStr"]
+//   let extraActionString = extraActionsData[extraActionKey]["funcStr"]
 //   extraActionString += "("
 //   extraActionString += String(entityKey)
-//   for(var i=0;i<extraActionsData[extraActionKey]["parameters"].length;i++){
+//   for(let i=0;i<extraActionsData[extraActionKey]["parameters"].length;i++){
 //     // if(i!=0){ //if we have entityID as the first variable then wealways need the comma
 //     extraActionString += ","
 //     // }
@@ -672,10 +680,10 @@ const extraActionDefault = {
 //   const structureTaskKey = String(structureTaskID)
 //   console.log("structureTaskKey = "+structureTaskKey)
 //   console.log(structureTaskData[structureTaskKey])
-//   var structureTaskString = structureTaskData[structureTaskKey]["funcStr"]
+//   let structureTaskString = structureTaskData[structureTaskKey]["funcStr"]
 //   structureTaskString += "("
 //   structureTaskString += String(structureKey)
-//   for(var i=0;i<structureTaskData[structureTaskKey]["parameters"].length;i++){
+//   for(let i=0;i<structureTaskData[structureTaskKey]["parameters"].length;i++){
 //     // if(i!=0){ //if we have entityID as the first variable then wealways need the comma
 //     structureTaskString += ","
 //     // }
@@ -736,16 +744,16 @@ function dig_land(entityKey){
   const gridPos = entities[entityKey].gridPos
   const tileID = hex.IDFromGridPos(gridPos, worldInfo.worldRadius)
   const tileKey = String(tileID)
-  if(worldInfo[tileKey].structID != -1){
+  if(worldTiles[tileKey].structID != -1){
     //we cant dig if there is a building there
     return
   }
-  var suppliesIGot = get_dug_materials(tileKey)
+  let suppliesIGot = get_dug_materials(tileKey)
   //put in the entities supplies
-  var countOfZeros = Object.keys(suppliesIGot).length
+  let countOfZeros = Object.keys(suppliesIGot).length
   console.log("suppliesIGot = ")
   console.log(suppliesIGot)
-  for (var supplyKey of Object.keys(suppliesIGot)){
+  for (let supplyKey of Object.keys(suppliesIGot)){
     //add to entityInventory
     if(suppliesIGot[supplyKey] == 0){
       countOfZeros -= 1
@@ -808,7 +816,7 @@ function getKeyByValue(object, value) {
 function new_random_building_name(typeString){
   const firstParts = ["The", "El", "2nd Best", "Grandest", "Your Local", "Ye Olde"]
   const secondParts = ["Grand", "Magical", "Bougois", "Cheap", "Community", "NGO", "Military", "Unwelcoming"]
-  var lastParts = []
+  let lastParts = []
   if (typeString == "struct"){
     lastParts = ["Shop", "Shoppe", "Palace", "Hotel", "Restaurant", "Place of Meeting", "Church"]
   }else if (typeString == "entity"){
@@ -940,7 +948,7 @@ console.log("worldTiles")
 console.log(worldTiles)
 console.log("entities")
 console.log(entities)
-var lastHoveredPath = [] //for saving a dijkstra path
+let lastHoveredPath = [] //for saving a dijkstra path
 
 
 
@@ -958,14 +966,14 @@ function App() {
   // Initialise state variables
 
 
-  var [gameState, setGameState] = useState(0)
-  var [subState, setSubState] = useState(0)//when we want the same general gameState but different sub methods
+  let [gameState, setGameState] = useState(0)
+  let [subState, setSubState] = useState(0)//when we want the same general gameState but different sub methods
   //setGameState(0)
-  var extraMessage = ""
-  var [message, setMessage] = useState("ParentString")
-  var [tileText, setTileTextObj] = useState({"0":"Game Start"})
+  let extraMessage = ""
+  let [message, setMessage] = useState("ParentString")
+  let [tileText, setTileTextObj] = useState({"0":"Game Start"})
 
-  var [stateTest, changeTstSte] = useState(false)
+  let [stateTest, changeTstSte] = useState(false)
   function changeState(){
     changeTstSte(!stateTest)
   }//doesnt update everything else it seems
@@ -977,9 +985,9 @@ function App() {
   //   "chosenTileID" : 0,
   //   "menuContext" : 0
   // }
-  // var [stateObj, setMyStateObject] = useState(initialState)
+  // let [stateObj, setMyStateObject] = useState(initialState)
   // function setStateObj(objsToUpdate){
-  //   var newState = structuredClone(stateObj)
+  //   let newState = structuredClone(stateObj)
   //   for (key of Object.keys(objsToUpdate)){
   //     newState[key] = objsToUpdate[key]
   //   }
@@ -991,13 +999,13 @@ function App() {
   //   "Thing" : [0,-1],
   //   "TileID" : 0,
   // }
-  // var [chosen, setMyChosens] = useState(initialChosens)
+  // let [chosen, setMyChosens] = useState(initialChosens)
 
-  //var [gameState, setGameState] = useState(0)
-  // var chosenTileID = 0
-  // var chosenThing = [0,-1]
-   var [chosenTileID, setChosenTileID] = useState(0)
-   var [chosenThing, setChosenThing] = useState([0,-1])
+  //let [gameState, setGameState] = useState(0)
+  // let chosenTileID = 0
+  // let chosenThing = [0,-1]
+   let [chosenTileID, setChosenTileID] = useState(0)
+   let [chosenThing, setChosenThing] = useState([0,-1])
 
 
   /////////////////////////////////////////////////////////////////////
@@ -1070,13 +1078,13 @@ function App() {
     console.log(newPath)
     //delete the highlight state on the old tiles
     //if lastHoveredPath.length == 0?
-    for (var tileIndex = 0;tileIndex < lastHoveredPath.length;tileIndex++){
+    for (let tileIndex = 0;tileIndex < lastHoveredPath.length;tileIndex++){
       const tile = lastHoveredPath[tileIndex]
       const tileID = hex.IDFromGridPos(tile,worldInfo.worldRadius)
       const otherTileKey = String(tileID)
       worldTiles[otherTileKey].extraState = 0
     }//set the highlight state on the new ones
-    for (var tileIndex = 0;tileIndex < newPath.length;tileIndex++){
+    for (let tileIndex = 0;tileIndex < newPath.length;tileIndex++){
       const tile = newPath[tileIndex]
       const tileID = hex.IDFromGridPos(tile,worldInfo.worldRadius)
       const otherTileKey = String(tileID)
@@ -1087,8 +1095,8 @@ function App() {
     lastHoveredPath = newPath
     //now the game should be able to  know if we want to higihlight the path
     lastHoveredID = instID
-    var textObj = {}
-    for (var tileIndex = 0;tileIndex < newPath.length;tileIndex++){
+    let textObj = {}
+    for (let tileIndex = 0;tileIndex < newPath.length;tileIndex++){
       const tile = newPath[tileIndex]
       const tileID = hex.IDFromGridPos(tile,worldInfo.worldRadius)
       const otherTileKey = String(tileID)
@@ -1114,17 +1122,17 @@ function App() {
     const unitTypeID = entities[entityKey].unitTypeID
     //get base stats for unit type (static data)
     const baseStats = ["atk", "def", "range", "accuracy"]
-    // var absoluteStats = {
+    // let absoluteStats = {
     //   "atk" : unitTypes[String(unitTypeID)].atk,
     //   "def" : unitTypes[String(unitTypeID)].def,
     //   "range" : unitTypes[String(unitTypeID)].range,
     // }
-    var absoluteStats = {}
-    for (var statKey of baseStats){
+    let absoluteStats = {}
+    for (let statKey of baseStats){
       absoluteStats[statKey] = unitTypes[String(unitTypeID)][statKey]
     }
     //apply stat multipliers
-    for(var statKey of Object.keys(entities[entityKey].statMult)){
+    for(let statKey of Object.keys(entities[entityKey].statMult)){
       absoluteStats[statKey] *= entities[entityKey].statMult[statKey]
     }
     //Need to apply other modifiers like HP lowering attack or defense and terrain etc
@@ -1134,8 +1142,8 @@ function App() {
   
   function attack_between_entities(entityKey1,entityKey2){
     //entityKey1 attacks first then entitiyKey2 attacks
-    // var stats1 = get_absolute_stats(entityKey1)
-    // var stats2 = get_absolute_stats(entityKey2) //DO EACH TIME
+    // let stats1 = get_absolute_stats(entityKey1)
+    // let stats2 = get_absolute_stats(entityKey2) //DO EACH TIME
     ////entityKey1 attacks first 
     one_direction_attack(entityKey1,entityKey2)
   
@@ -1147,8 +1155,8 @@ function App() {
   }
   
   function one_direction_attack(attackerKey,defenderKey){
-    var attackerStats = get_absolute_stats(attackerKey)
-    var defenderStats = get_absolute_stats(defenderKey)
+    let attackerStats = get_absolute_stats(attackerKey)
+    let defenderStats = get_absolute_stats(defenderKey)
     //get damage
     const damage = attackerStats["atk"]/defenderStats["def"]
     entity_take_damage(damage,defenderKey)
@@ -1188,10 +1196,10 @@ function evaluateExtraAction(entityKey, extraActionID){
   const extraActionKey = String(extraActionID)
   console.log("extraActionKey = "+extraActionKey)
   console.log(extraActionsData[extraActionKey])
-  var extraActionString = extraActionsData[extraActionKey]["funcStr"]
+  let extraActionString = extraActionsData[extraActionKey]["funcStr"]
   extraActionString += "("
   extraActionString += String(entityKey)
-  for(var i=0;i<extraActionsData[extraActionKey]["parameters"].length;i++){
+  for(let i=0;i<extraActionsData[extraActionKey]["parameters"].length;i++){
     // if(i!=0){ //if we have entityID as the first variable then wealways need the comma
     extraActionString += ","
     // }
@@ -1209,10 +1217,10 @@ function evaluateStructureTask(structureKey, structureTaskID){
   const structureTaskKey = String(structureTaskID)
   console.log("structureTaskKey = "+structureTaskKey)
   console.log(structureTaskData[structureTaskKey])
-  var structureTaskString = structureTaskData[structureTaskKey]["funcStr"]
+  let structureTaskString = structureTaskData[structureTaskKey]["funcStr"]
   structureTaskString += "("
   structureTaskString += String(structureKey)
-  for(var i=0;i<structureTaskData[structureTaskKey]["parameters"].length;i++){
+  for(let i=0;i<structureTaskData[structureTaskKey]["parameters"].length;i++){
     // if(i!=0){ //if we have entityID as the first variable then wealways need the comma
     structureTaskString += ","
     // }
@@ -1316,12 +1324,12 @@ function evaluateStructureTask(structureKey, structureTaskID){
   const next_thing_that_needs_orders = () => {
     const faction = playerFaction
     console.log("finding next available thing")
-    var selectedStructure = false
-    var selectedID = -1
+    let selectedStructure = false
+    let selectedID = -1
     //check all structures I control
     //get the next one that hasnt had an issue ordered
-    var structureKeys = Object.keys(structures)
-    var entityKeys = Object.keys(entities)
+    let structureKeys = Object.keys(structures)
+    let entityKeys = Object.keys(entities)
     const selectedType = typeID_to_word[chosenThing[0]]
     if(selectedType === "structure"){ //should do it the reverse way
       structureKeys = remove_array_element(structureKeys,String(chosenThing[1]))
@@ -1399,13 +1407,13 @@ function evaluateStructureTask(structureKey, structureTaskID){
   function get_contextual_UI(){
     //return a JSX element that is the HTML layout for the different buttons needed
     const selectedType = typeID_to_word[chosenThing[0]]
-    var UIContextualButtonsJSX = <></>
-    var extraButtonList = []
+    let UIContextualButtonsJSX = <></>
+    let extraButtonList = []
     if(selectedType === "entity"){
       const entityKey = String(chosenThing[1])
       const entityType = entities[entityKey].unitTypeID
       const extraActionIDs = unitTypes[entityType].extraActionIDs
-      for(var i=0;i<extraActionIDs.length;i++){
+      for(let i=0;i<extraActionIDs.length;i++){
         const extraActionID = extraActionIDs[i]
         console.log("buttonGeneration: extraActionID = "+ extraActionIDs[i])
         const singleButtonJSX = <button type="button" onClick={() => evaluateExtraAction(entityKey, extraActionID)} className="UI_contextual" id={"extra"+String(i)} key={"extra"+String(i)}>{extraActionsData[extraActionIDs[i]].name}</button>
@@ -1569,7 +1577,7 @@ function evaluateStructureTask(structureKey, structureTaskID){
         }
         //maybe some other check conditions
         //if we make it here we should attack
-        var canEnemyAtkBack = true
+        let canEnemyAtkBack = true
         const enemyStats = get_absolute_stats(enemyKey)
         const enemyRange = enemyStats.range
         if (hex.distanceAxial(myTile, chosenTile) > enemyRange){
@@ -1625,12 +1633,12 @@ function evaluateStructureTask(structureKey, structureTaskID){
     }
   }
 
-  var selectPos = [0,10,0]
+  let selectPos = [0,10,0]
   function upSelectPos(){
     selectPos[1] = selectPos[1]+0.5
   }
 
-  var jsxDiv = (
+  let jsxDiv = (
   <div display="block" 
     className={tw(
       css`
@@ -1652,7 +1660,7 @@ function evaluateStructureTask(structureKey, structureTaskID){
     const gameStateStr = gameStateIntToStr[gameState]
     //const gameStateStr = gameStateIntToStr[stateObj.gameState]
     const lightIntensity = 0.5
-    var canvasJSX = <></>
+    let canvasJSX = <></>
     if (gameStateStr === "orders"){
       extraMessage = "where should the unit move?"
       //I can change the function thats called on InstancedBoxes to instead move the unit to that spot
@@ -1711,27 +1719,27 @@ function evaluateStructureTask(structureKey, structureTaskID){
   }
   
   function get_menu_JSX(){
-    var menuOverlayJSX = <><div className="overlayMenu" id="buildMenu" disabled="disabled"></div></>
+    let menuOverlayJSX = <><div className="overlayMenu" id="buildMenu" disabled="disabled"></div></>
     if (gameState == gameStateEnum["orders"]){
       return menuOverlayJSX
     }
     if (chosenThing[0] == 0){//structure chosen//(gameState === 2){//buildMenu
     //if (stateObj.gameState === 2){//buildMenu
       console.log("in menu, game state = ", gameState)
-      var buildingTasksJSX = []
+      let buildingTasksJSX = []
       if(chosenThing[1] == -1){
         return menuOverlayJSX
       }
       const structKey = String(chosenThing[1])
       const structTypeKey = String(structures[structKey].typeID)
       const possibleTasks = structureTypes[structTypeKey]["taskIDs"]
-      for(var taskID of possibleTasks){
+      for(let taskID of possibleTasks){
         const scopedTaskID = taskID
         const taskKey = String(taskID)
         console.log("taskID= "+ taskKey)
         const taskData = structureTaskData[taskKey]
         
-        var buttonClickable = true
+        let buttonClickable = true
         if(taskData.checkEntity == true){
           const gridPos = structures[structKey].gridPos
           const tileID = hex.IDFromGridPos(gridPos,worldInfo.worldRadius)
@@ -1779,12 +1787,12 @@ function evaluateStructureTask(structureKey, structureTaskID){
   function get_inCanvasUI(){
     //If we have a chosen tile -> show it 
     const emptyJSXArray = <></>
-    var inCanvasUI_JSXArray = []
+    let inCanvasUI_JSXArray = []
     const chosenID = chosenThing[1]
     if(chosenID == -1){
       return emptyJSXArray
     }
-    var gridPos = []
+    let gridPos = []
     if (chosenThing[0] == 0){//structure
       gridPos = structures[String(chosenID)].gridPos
     }else if (chosenThing[0] == 1){//entity
@@ -1792,7 +1800,7 @@ function evaluateStructureTask(structureKey, structureTaskID){
     }else{
       return emptyJSXArray
     }
-    var worldPos = get_tile_pos(gridPos)
+    let worldPos = get_tile_pos(gridPos)
     //selected thing UI
     inCanvasUI_JSXArray.push(
     <Cylinder position={worldPos} args={[worldInfo.tileRadius, worldInfo.tileRadius, 10*worldInfo.tileHeight*2, 6, 2]} key={"chosenThingUI"}>
@@ -1810,12 +1818,12 @@ function evaluateStructureTask(structureKey, structureTaskID){
       const gridPosInRange = hex.get_circle_of_gridPos(myGridPos, range, worldInfo.worldRadius)
       console.log("gridPosInRange = ")
       console.log(gridPosInRange)
-      var targetTileKeys = []
+      let targetTileKeys = []
       const myFaction = entities[String(chosenThing[1])].faction
-      for (var gridPos of gridPosInRange){
+      for (let gridPos of gridPosInRange){
         const tileID = hex.IDFromGridPos(gridPos,worldInfo.worldRadius)
         const tileKey = String(tileID)
-        var isValidEnemy = false
+        let isValidEnemy = false
         if (worldTiles[tileKey].structID != -1){
           //it has a structure
           const structKey = String(worldTiles[tileKey].structID)
@@ -1833,9 +1841,9 @@ function evaluateStructureTask(structureKey, structureTaskID){
       console.log("targetTileKeys = ")
       console.log(targetTileKeys)
       //now we have targetTileKeys
-      for(var tileKey of targetTileKeys){
+      for(let tileKey of targetTileKeys){
         const gridPos = [worldTiles[tileKey].q,worldTiles[tileKey].r]
-        var worldPos = get_tile_pos(gridPos)
+        let worldPos = get_tile_pos(gridPos)
         inCanvasUI_JSXArray.push(
           <Cylinder position={worldPos} args={[worldInfo.tileRadius, worldInfo.tileRadius, 10*worldInfo.tileHeight*2, 6, 2]} key={"enemyAt"+tileKey}>
             <meshPhongMaterial color="red" opacity={0.4} transparent />
@@ -1850,17 +1858,17 @@ function evaluateStructureTask(structureKey, structureTaskID){
 
   function get_worldTilesText_JSX(){
     //so when we are doing movement or something we want to load text on the screen
-    //var text_JSX = <></>
-    var text_JSX_Array = []
-    var tileKeys = Object.keys(tileText)
+    //let text_JSX = <></>
+    let text_JSX_Array = []
+    let tileKeys = Object.keys(tileText)
     if (tileKeys.length == 0){
       return text_JSX_Array
     }
     //else we have text we want to render to the canvas
     console.log("trying to print text onto canvas")
     //BUT DOES NOT WORK!!!
-    var count = 0
-    for (var tileKey of tileKeys){
+    let count = 0
+    for (let tileKey of tileKeys){
       //how to append to a JSX element
       const gridPos = [worldTiles[tileKey].q,worldTiles[tileKey].r]
       const world2Pos = hex.axialToFlatPos(worldTiles[tileKey].q,worldTiles[tileKey].r, worldInfo.tileRadius)
@@ -2076,15 +2084,15 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
   }
   
   function addArrays(arrA,arrB){
-    var newArray = []
-    for(var i=0;i<arrA.length;i++){
+    let newArray = []
+    for(let i=0;i<arrA.length;i++){
       newArray.push(arrA[i]+arrB[i])
     }
     return newArray
   }
 
-  var data = {} //declared in while loop
-  var dataDefault = {
+  let data = {} //declared in while loop
+  let dataDefault = {
     "distanceFromStart" : Infinity,
     "directionToStart" : null
   }
@@ -2095,7 +2103,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
   ////		// set the node's parent to none
   ////		vertexData[vertexKey].dijkstra.directionToTown = null
   //		data[vertexKey] = structuredClone(dataDefault)
-  var directionsDic = { //THIS WILL NOT WORK THE SAME AS THE OTHER ONE
+  let directionsDic = { //THIS WILL NOT WORK THE SAME AS THE OTHER ONE
     0 : [0,0],
     1 : [-1,0],
     2 : [0,-1],
@@ -2125,10 +2133,10 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     
     //// Create an unexplored set
     //let the unexploredSet equal a set of all the nodes
-  var unexploredVertices = [] // vertexData.keys().duplicate(true) //these are strings...
-  var exploredVertices = []
+  let unexploredVertices = [] // vertexData.keys().duplicate(true) //these are strings...
+  let exploredVertices = []
   //	for initialVert in initialVertices:
-  //		//var index = sideVertices*initialVert[0] + initialVert[1]
+  //		//let index = sideVertices*initialVert[0] + initialVert[1]
   //		vertexData[String(initialVert[0] + "," + initialVert[1])].dijkstra.distanceFromTown = 0
   //		vertexData[String(initialVert[0] + "," + initialVert[1])].dijkstra.directionToTown = dicData.directionsEnum[Vector2(0,0)]
   //
@@ -2136,10 +2144,10 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     data[String(initialVertex[0] + "," + initialVertex[1])] = structuredClone(dataDefault)
     data[String(initialVertex[0] + "," + initialVertex[1])]["distanceFromStart"] = 0
     data[String(initialVertex[0] + "," + initialVertex[1])]["directionToStart"] = 0//=axialDirectionsArray.indexOf([0,0])//directionsEnum[[0,0]]
-    var initialElement = [0, initialVertex]
+    let initialElement = [0, initialVertex]
     unexploredVertices.push(initialElement)
     
-    var endCondition = false
+    let endCondition = false
     //console.log("about to start while loop")
     while(!endCondition){//while the unexploredSet is not empty //this only works for fully connected maps
       //console.log("in while loop")
@@ -2151,37 +2159,37 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
       unexploredVertices.sort(myArraySorter)
       //console.log("unexploredVertices")
       //print_array(unexploredVertices)
-      var current_decision_and_vertex = unexploredVertices[unexploredVertices.length-1]
+      let current_decision_and_vertex = unexploredVertices[unexploredVertices.length-1]
       unexploredVertices = unexploredVertices.toSpliced(unexploredVertices.length-1,1)
       //unexploredVertices.splice(unexploredVertices.length-1,1)
-      //var current_decision_and_vertex = unexploredVertices.pop();//_back()//    let the currentNode equal the node with the smallest distance
+      //let current_decision_and_vertex = unexploredVertices.pop();//_back()//    let the currentNode equal the node with the smallest distance
       //console.log("after pop")
       //print_array(unexploredVertices)
       ////console.log("current_decision_and_vertex = ")
       ////console.log(current_decision_and_vertex)
-      var currentVertex = current_decision_and_vertex[1]
+      let currentVertex = current_decision_and_vertex[1]
       //console.log("currentVertex = "+ currentVertex)
       exploredVertices.push(currentVertex)
       data[String(currentVertex[0] + "," + currentVertex[1])]["distanceFromStart"] = current_decision_and_vertex[0]  //record the distance for later
       
       
       for (const dir of adjacentHexAxialMods){// for each neighbor (still in unexploredSet) to the currentNode
-        //var neighbour = currentVertex + dir
-        var neighbour = addArrays(currentVertex,dir)
+        //let neighbour = currentVertex + dir
+        let neighbour = addArrays(currentVertex,dir)
         //if not inBounds(neighbour):
         //if (!worldData.custom_inBounds(neighbour, vertexGridSize)){
         if (!worldTiles.hasOwnProperty(hex.IDFromGridPos(neighbour,worldInfo.worldRadius))){
           continue
         }
         //        // Calculate the new distance
-        var newDistance = current_decision_and_vertex[0] + travelDifficulty(currentVertex, neighbour)
+        let newDistance = current_decision_and_vertex[0] + travelDifficulty(currentVertex, neighbour)
         if (exploredVertices.includes(neighbour)){
           continue
         }
         if (!data.hasOwnProperty(String(neighbour[0] + "," + neighbour[1]))){
           data[String(neighbour[0] + "," + neighbour[1])] = structuredClone(dataDefault)
         }
-        var oldDistance = data[String(neighbour[0] + "," + neighbour[1])]["distanceFromStart"]
+        let oldDistance = data[String(neighbour[0] + "," + neighbour[1])]["distanceFromStart"]
         if (oldDistance == Infinity){
           unexploredVertices.push([oldDistance, neighbour])
         }
@@ -2199,7 +2207,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
           //print_array([[oldDistance, neighbour]])
           //maybe unexploredVertices is only saving one entry not multiple
           const oldArrayElement = [oldDistance, neighbour]
-          //var neighbourIndex = unexploredVertices.indexOf(oldArrayElement)
+          //let neighbourIndex = unexploredVertices.indexOf(oldArrayElement)
           const indexOfArrayElement = (element) => {
             //if (element[0] === oldDistance){
             if (element[1][0] == neighbour[0] && element[1][1] == neighbour[1]){
@@ -2207,7 +2215,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
             }
            // }
           }//Alternate to indexOf
-          var neighbourIndex = unexploredVertices.findIndex(indexOfArrayElement)
+          let neighbourIndex = unexploredVertices.findIndex(indexOfArrayElement)
           
           //THIS ONE THROWS AN ERROR
           //console.log(neighbourIndex)
@@ -2232,12 +2240,12 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     //while loop ends
     //now actually get path
     //now the while loop is finished we need to reconstruct a path from the startNode to endNode
-    var tempPath = []
-    var endTrace = false
-    var currentVertex = finalVertex
+    let tempPath = []
+    let endTrace = false
+    let currentVertex = finalVertex
     tempPath.push(currentVertex)
     while (endTrace == false){
-      //var prevVertex = currentVertex + directionsDic[ data[String(currentVertex[0]+ "," +currentVertex[1])]["directionToStart"] ]//previousNodes[currentNode]
+      //let prevVertex = currentVertex + directionsDic[ data[String(currentVertex[0]+ "," +currentVertex[1])]["directionToStart"] ]//previousNodes[currentNode]
       
       //NEW PROBLEM HERE:
       //addArrays fails why?
@@ -2246,7 +2254,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
       //console.log("dirToStartID = "+dirToStartID)
       const dirToStart = directionsDic[dirToStartID]
       //console.log("dirToStart = "+dirToStart)
-      var prevVertex = addArrays(currentVertex,dirToStart)//previousNodes[currentNode]
+      let prevVertex = addArrays(currentVertex,dirToStart)//previousNodes[currentNode]
       //console.log("previousVertex = ", prevVertex)
   //		if prevVertex == null:
   //			endTrace = true
@@ -2266,10 +2274,10 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     }
     //path is from end to start, we need to reverse it so it goes from start to end
     //console.log("tempPath = ", tempPath)
-    //var tempPath = path.duplicate()
-    //var vertexPath = worldData.array_invert(tempPath)
-    var vertexPath = tempPath.reverse()
-    // var stringPath = []
+    //let tempPath = path.duplicate()
+    //let vertexPath = worldData.array_invert(tempPath)
+    let vertexPath = tempPath.reverse()
+    // let stringPath = []
     // for(const vert of vertexPath){
     //   stringPath.push(String(vert[0]+ "," +vert[1]))
     // }
@@ -2280,9 +2288,9 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
   
   function print_array(printArray){
     console.log("printing an array of length "+printArray.length)
-    for(var i=0;i<printArray.length;i++){
+    for(let i=0;i<printArray.length;i++){
       if (typeof printArray[i] == "object"){
-        for (var j=0;j<printArray[i].length;j++){
+        for (let j=0;j<printArray[i].length;j++){
           
           if (typeof printArray[i] == "object"){
             console.log("element ["+i+", "+j+"] = ["+printArray[i][j]+"]")
@@ -2306,18 +2314,18 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
 
 
   function  get_dug_materials(tileKey){
-    var dugMaterials = structuredClone(suppliesDefault)
-    var currentHeight = worldTiles[tileKey].noise
+    let dugMaterials = structuredClone(suppliesDefault)
+    let currentHeight = worldTiles[tileKey].noise
     if(currentHeight < worldInfo.minNoise){
       //TODO do elsewhere so we dont even click the button
       return dugMaterials
     }
-    var ogHeight = worldTiles[tileKey].ogNoise
+    let ogHeight = worldTiles[tileKey].ogNoise
     //if we have minNoise, and maxNoise is ogNoise
     // if in first 0.3:top layer material
     // if in next 0.3:light materials
     // else hvy materials and crystals
-    //var randNumber = simplexNoise.noise()
+    //let randNumber = simplexNoise.noise()
     //const noiseScale = worldInfo.noiseScale
     const randNumber = randNumber_for_tile(tileKey)//, randType = 0, normalised = true)
     const distanceDown = ogHeight - currentHeight
@@ -2337,7 +2345,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
       dugMaterials.hvStone = randNumber*worldInfo.dugYieldMod
       //we also need crystal
       const randNum2 = randNumber_for_tile(tileKey,2,false)
-      var leftOverAmount = (1-randNumber)*worldInfo.dugYieldMod
+      let leftOverAmount = (1-randNumber)*worldInfo.dugYieldMod
       if (randNum2 <= 0){
         dugMaterials.hvMetal = randNum2*leftOverAmount
       }else{//randNum2 in [0,1] chances are its small, so we want it to be the crystal proportion
@@ -2353,7 +2361,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
   function randNumber_for_tile(tileKey, randType = 0, normalised = true){
     //deterministic random numbers
     if(randType == -1){//normal noise
-      var randNumber = simplexNoise.noise2D(noiseScale*q,noiseScale*r)
+      let randNumber = simplexNoise.noise2D(noiseScale*q,noiseScale*r)
       if(normalised==false){
         return randNumber//in [-1,1]
       }
@@ -2361,7 +2369,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     }
     if(randType == 0){ //flip gridPos
       const noiseScale = worldInfo.noiseScale
-      var randNumber = simplexNoise.noise2D(noiseScale*worldTiles[tileKey].r,noiseScale*worldTiles[tileKey].q)
+      let randNumber = simplexNoise.noise2D(noiseScale*worldTiles[tileKey].r,noiseScale*worldTiles[tileKey].q)
       if(normalised==false){
         return randNumber//in [-1,1]
       }
@@ -2369,7 +2377,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
 
     }else if(randType == 1){ //3d noise based on tilePos
       const noiseScale = worldInfo.noiseScale
-      var randNumber = simplexNoise.noise3D(noiseScale*worldTiles[tileKey].q,noiseScale*worldInfo.tileHeight*worldTiles[tileKey].noise,noiseScale*worldTiles[tileKey].r)
+      let randNumber = simplexNoise.noise3D(noiseScale*worldTiles[tileKey].q,noiseScale*worldInfo.tileHeight*worldTiles[tileKey].noise,noiseScale*worldTiles[tileKey].r)
       if(normalised==false){
         return randNumber//in [-1,1]
       }
@@ -2377,7 +2385,7 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
     }
     else if(randType == 2){ //2d noise with strange variables
       const noiseScale = worldInfo.noiseScale
-      var randNumber = simplexNoise.noise2D(noiseScale*worldInfo.tileHeight*worldTiles[tileKey].noise,noiseScale**worldInfo.tileHeight*worldTiles[tileKey].ogNoise)
+      let randNumber = simplexNoise.noise2D(noiseScale*worldInfo.tileHeight*worldTiles[tileKey].noise,noiseScale**worldInfo.tileHeight*worldTiles[tileKey].ogNoise)
       if(normalised==false){
         return randNumber//in [-1,1]
       }
@@ -2386,3 +2394,111 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
   }
 
 
+
+
+//{}
+  //When we finish our turn we have to restore MP and increase task status
+  //we want to do all things then have ai do their things then have a button appear to end all turns
+  function end_of_all_turns(){
+
+    //FOR ALL ENTITIES
+    for(entityKey of Object.keys(entities)){
+      //restore values
+    typeID = entities[entityKey].unitTypeID
+    //if healthy
+    entities[entityKey].HP += entities[entityKey].HPperTurn
+          if(climbing){
+      //if we are flagged as climbing then we save our MP until we hav3 enough to climb a hill
+            entities[entityKey].MP += entities[entityKey].maxMP
+    }else{
+      entities[entityKey].MP = entities[entityKey].maxMP
+    }
+    }
+    
+
+    //FOR ALL STRUCTURES
+    for(structKey of Object.keys(structures)){
+      if( structures[structKey].doingTask){//FIX
+        //add (subtract) production to task
+        //see if task is complete
+        let townKey = structures[structKey].townKey
+        structures[structKey].taskStatus -= towns[townKey].production
+        if (structures[structKey].taskStatus <= 0){
+          //DO AND REMOVE CURRENT TASK
+
+          //FIX
+          //ACTUALLY DO TASK!!!!
+          //RUN FUNCTION NOW THAT TIMER IS FINISHED
+
+          //SET UP NEXT TASK
+          if(structures[structKey].tasks.length == 0){
+            structures[structKey].taskStatus = 0
+            structures[structKey].doingTask = false
+          }else{
+            //we have a new task
+            //need to set to the production value of the new task
+            let newProductionValue = 0 //FIX
+            structures[structKey].taskStatus = newProductionValue
+          }
+        }
+      }
+      //restore some health
+      //if HP < maxHP then add HPPerTurn
+    }
+
+    //FOR ALL TOWNS
+    for(townKey of Object.keys(towns)){
+      let wellFed = false
+      let foodConsumedThisTurn = 0
+      //remove food from food wastage
+      foodConsumedThisTurn += towns[townKey].supplies.food * towns[townKey].foodWasteRate//all food wastes
+      //remove food from population
+      foodConsumedThisTurn += towns[townKey].population * worldInfo.foodConsumeRate
+      //if not enough food then happiness goes down
+      if (towns[townKey].supplies.food <= foodConsumedThisTurn){
+        if(towns[townKey].supplies.food <= Math.floor(0.5*foodConsumedThisTurn)){
+          towns[townKey].happiness -= worldInfo.noFoodMortalityPenalty
+        }
+        towns[townKey].happiness -= worldInfo.noFoodHappinessPenalty
+        if (towns[townKey].happiness <= 0){
+          towns[townKey].happiness = 0
+        }
+        //out of food, people get scared and mortality rises happiness goes down
+        wellFed = false
+        towns[townKey].supplies.food = 0
+      }else{
+        towns[townKey].supplies.food -= foodConsumedThisTurn
+        wellFed = true
+        //we still have food in storage
+        //happiness goes up to a maximum
+        towns[townKey].happiness += worldInfo.noFoodHappinessPenalty //Increase happiness by same amount
+        if(towns[townKey].happiness >= foodHappinessMax){
+          towns[townKey].happiness = foodHappinessMax
+        }
+      }
+      
+      //deathCount += mortality
+      towns[townKey].deathCount += towns[townKey].mortality
+      if (towns[townKey].deathCount >= 1){
+        if (towns[townKey].population >= 2){
+          //something should happen if we lose all our population
+          towns[townKey].population -= 1
+        }
+        towns[townKey].deathCount = 0
+      }
+
+      //we also need population to go up
+      //based on happiness and food etc
+      //wellFed = false
+      let wellFedInt = wellFed ? 1 : 0;
+
+      towns[townKey].nextPopCount -= wellFedInt*worldInfo.baseGrowthRate*towns[townKey].happiness//goes down, if hits zero we get a new population
+      if(towns[townKey].nextPopCount <= 0){
+        towns[townKey].population += 1
+        towns[townKey].nextPopCount = towns[townKey].population
+      }
+    }
+
+
+    //FOR ALL FACTIONS
+  }

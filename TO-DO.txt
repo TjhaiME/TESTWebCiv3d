@@ -1,3 +1,5 @@
-The player controller is enough to make a fun physics/parkour game,
-procedurally generate parkour map
-with physics obstacles/kickers
+On firefox/mums computer the mesh does not load
+it could be due to this:
+https://stackoverflow.com/questions/61011351/firefox-throw-a-n-error-drawarraysinstanced-but-attribs-only-supply-0-when-i-m
+
+//we need a task to consume salt to decrease foodWastageRate

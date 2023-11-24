@@ -8,18 +8,18 @@ import * as THREE from "three"
 import fragmentShader from '../shaders/fragmentShader';
 import vertexShader from '../shaders/vertexShader';
 
-var numOfEnemies = 10;//higher to demonstrate how arrays can be used to make multiple JSX elements
+let numOfEnemies = 10;//higher to demonstrate how arrays can be used to make multiple JSX elements
 
-var enemiesDic = make_initial_enemy_list();
+let enemiesDic = make_initial_enemy_list();
 
 // import Ecctrl, { EcctrlAnimation } from "ecctrl";
 // //convert player to EC-ctrl
 
 
 function convert_single_to_JSX(eKey){
-    var myKey = enemiesDic[eKey].key
-    var myPos = [enemiesDic[eKey].pos.x,enemiesDic[eKey].pos.y,enemiesDic[eKey].pos.z]
-    var myCol = enemiesDic[eKey].col
+    let myKey = enemiesDic[eKey].key
+    let myPos = [enemiesDic[eKey].pos.x,enemiesDic[eKey].pos.y,enemiesDic[eKey].pos.z]
+    let myCol = enemiesDic[eKey].col
     return(
         <RigidBody name="enemy" key={myKey}>
             <Box position={myPos} args={[0.5,1,0.5]}>
@@ -29,31 +29,31 @@ function convert_single_to_JSX(eKey){
     )
 }
 // function convert_wholeDic_to_JSX(){
-//     var jsxArray = []
-//     for(var eKey of Object.keys(enemiesDic)){
-//         var arrayVal = convert_single_to_JSX(eKey)
+//     let jsxArray = []
+//     for(let eKey of Object.keys(enemiesDic)){
+//         let arrayVal = convert_single_to_JSX(eKey)
 //         jsxArray.push(arrayVal)
 //     }
 //     return jsxArray
 // }
 function get_rand_col(){
-    var x=Math.round(0xffffff * Math.random()).toString(16);
-    var y=(6-x.length);
-    var z="000000";
-    var z1 = z.substring(0,y);
-    var colour= "#" + z1 + x;
+    let x=Math.round(0xffffff * Math.random()).toString(16);
+    let y=(6-x.length);
+    let z="000000";
+    let z1 = z.substring(0,y);
+    let colour= "#" + z1 + x;
     return colour
 }
 
 function make_initial_enemy_list(){
-    var newEnemiesDic = {}
-    for (var i=0;i<numOfEnemies;i++){
-        var posX = 0.35*i
-        var posY = 0.3*i
-        var posZ = -0.35*i
-        var myKey = "key"+i
-        var myCol = get_rand_col()
-        var enemyDicEntry = {
+    let newEnemiesDic = {}
+    for (let i=0;i<numOfEnemies;i++){
+        let posX = 0.35*i
+        let posY = 0.3*i
+        let posZ = -0.35*i
+        let myKey = "key"+i
+        let myCol = get_rand_col()
+        let enemyDicEntry = {
             pos:{x:posX,y:posY,z:posZ},
             key:myKey,
             col:myCol
@@ -65,13 +65,13 @@ function make_initial_enemy_list(){
 }
 
 function add_new_enemy(){
-    var i = numOfEnemies//nextID
-    var posX = 0.35*i
-    var posY = 0.3*i
-    var posZ = -0.35*i
-    var myKey = "key"+i
-    var myCol = get_rand_col()
-    var enemyDicEntry = {
+    let i = numOfEnemies//nextID
+    let posX = 0.35*i
+    let posY = 0.3*i
+    let posZ = -0.35*i
+    let myKey = "key"+i
+    let myCol = get_rand_col()
+    let enemyDicEntry = {
         pos:{x:posX,y:posY,z:posZ},
         key:myKey,
         col:myCol
@@ -157,8 +157,8 @@ export const Enemies = () => {
     
     //console.log("doing update")
     //make_initial_enemy_list()
-    // var enemyKeys = Object.keys(enemiesDic)
-    // var jsxArray = convert_wholeDic_to_JSX()
+    // let enemyKeys = Object.keys(enemiesDic)
+    // let jsxArray = convert_wholeDic_to_JSX()
 
     return (
         <>

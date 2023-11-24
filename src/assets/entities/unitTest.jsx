@@ -9,7 +9,7 @@ const absolutePath = "/src/assets/entities/UnitWithAtlasMaterial.glb"
 const relativePath = "./UnitWithAtlasMaterial.glb"
 const path = absolutePath
 
-export var Model = (props) => {
+export let Model = (props) => {
   const { nodes, materials } = useGLTF(path);
   return (
     <group {...props} dispose={null}>

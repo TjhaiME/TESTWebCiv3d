@@ -8,7 +8,7 @@ import * as THREE from "three"
 import fragmentShader from '../shaders/fragmentShader';
 import vertexShader from '../shaders/vertexShader';
 
-var numOfFloors = 10;//higher to demonstrate how arrays can be used to make multiple JSX elements
+let numOfFloors = 10;//higher to demonstrate how arrays can be used to make multiple JSX elements
 
 export const RBody = () => {
     const [hover, setHover] = useState(false);
@@ -89,11 +89,11 @@ export const RBody = () => {
     const arrayOfFloorPos = []
     
     console.log("doing update")
-    for (var i=0;i<numOfFloors;i++){
-        var posX = 0.5*i
-        var posY = 0.75*i
-        var posZ = -0.1*i
-        var myKey = "key"+i
+    for (let i=0;i<numOfFloors;i++){
+        let posX = 0.5*i
+        let posY = 0.75*i
+        let posZ = -0.1*i
+        let myKey = "key"+i
         arrayOfFloors2.push(<RigidBody type="fixed" name="floor" key={myKey}><Box position={[posX,posY,posZ]} args={[10,1,10]}><meshStandardMaterial color="springgreen" /></Box></RigidBody>)
         arrayOfFloorPos.push({x:posX,y:posY,z:posZ})
     }

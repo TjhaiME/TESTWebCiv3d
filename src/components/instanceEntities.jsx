@@ -43,8 +43,8 @@ const data = Array.from({ length: 1000 }, () => ({ color: new THREE.Color( Math.
 
 
 
-var needsUpdate = false
-var hoveredInstanceID = -1
+let needsUpdate = false
+let hoveredInstanceID = -1
 // get_inital_world_data()
 // console.log(worldTiles)
 //export const InstancedBoxes = () => {
@@ -82,7 +82,7 @@ function InstancedEntities({entities,choosemessage}){
 
     //const keysOfWorld = Object.keys(worldTiles)
     for (let indx = 0; indx < Object.keys(worldTiles).length; indx++){
-      //var offset = false
+      //let offset = false
       //if(x%2==1){offset = true}
       const tileKey = Object.keys(worldTiles)[indx]
       const yPos = worldTiles[tileKey]["noise"]
