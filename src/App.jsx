@@ -2502,3 +2502,10 @@ function find_path_on_grid_with_dijkstra_algorithim(initialVertex, finalVertex){
 
     //FOR ALL FACTIONS
   }
+
+let factions = {}
+const factionDefault = {
+  "AI" : true,
+  "relations" : {}, //faction Relations
+  "personality" : {}, //personality Traits for AI
+}
